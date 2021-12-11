@@ -6,10 +6,15 @@
 </head>
 
 <body class="p-4">
-    <h1>Select Song or Album</h1>
+    <button>Play</button>
+
+    <p>Select Song or Album</h1>
     <input type="Radio" Name="Waveform" id="Mario" checked="checked">Super Mario
     <input type="Radio" Name="Waveform" id="Other1">Other1
     <input type="Radio" Name="Waveform" id="Other2">Other2
+
+    <p> Select n order </p>
+    <input type="range" id="nOrder" min="0" max="2" steps="1" value="2" list="nOrder" oninput="nOrder(this.value)"></input>
 
 
 
