@@ -15,7 +15,7 @@ TWINKLE_TWINKLE = {
       {pitch: 69, startTime: 2.0, endTime: 2.5},
       {pitch: 69, startTime: 2.5, endTime: 3.0},
       {pitch: 67, startTime: 3.0, endTime: 4.0},
-      {pitch: 65, startTime: 4.0, endTime: 4.5},
+      {pitch: 60, startTime: 4.0, endTime: 4.5},
       {pitch: 65, startTime: 4.5, endTime: 5.0},
       {pitch: 64, startTime: 5.0, endTime: 5.5},
       {pitch: 60, startTime: 5.5, endTime: 6.0},
@@ -48,7 +48,7 @@ function generateTransitions(noteSequence){
 
     var uniquePitches = TWINKLE_TWINKLE.notes.map(item => item.pitch).filter((value, index, self) => self.indexOf(value) === index)
     // for each unique pitch in song, determine transitions 
-    var matrix = new Array([]); 
+    var matrix = Array.from(Array(2), _ => Array(2).fill(0));
     var pitchCols = new Array()
     var pitchRows = new Array()
 
@@ -69,17 +69,21 @@ function generateTransitions(noteSequence){
         }
 
         currIndex = pitchCols.indexOf(curr.pitch)
+        matrix[][currIndex] = 0
 
         // determine if prev combo is in matrix
         if(pitchRows.includes(prev2.pitch + ","+ prev1.pitch)){
             // both exist, so add 1 to that element 
             console.log("PREV2 EXISTS")
             prevIndex = pitchRows.indexOf(prev2.pitch + ","+ prev1.pitch)
-            matrix[prevIndex][currIndex] = matrix[prevIndex][currIndex] + 1
+            console.log("prev idx is " + prevIndex)
+            var priorCount = matrix[prevIndex][currIndex]
+            console.log("prior count " + priorCount)
+            matrix[prevIndex][currIndex] = priorCount + 1
         }else{
             // prev doesnt exist yet, make new row 
             console.log("MAKING NEW ROW")
-            matrix.push([])
+            matrix.push([0])
             pitchRows.push(prev2.pitch + ","+ prev1.pitch)
             prevIndex = pitchRows.indexOf(prev2.pitch + ","+ prev1.pitch)
             matrix[prevIndex][currIndex] = 1
