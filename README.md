@@ -1,4 +1,4 @@
-# song/album mood generator, markov to create new melody
+## New Melody and Color Generator 
 
 https://github.com/Tonejs/Midi
 
