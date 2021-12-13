@@ -1,6 +1,8 @@
 // Song 
-const marioSelected = document.getElementById('Mario')
-const otherSelected = document.getElementById('Other1')
+const marioSelected = document.getElementById('Mario');
+const otherSelected = document.getElementById('Other1');
+var n = parseInt(document.getElementById("nOrder").value);
+var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
 
 var songSelected;
 var noteSequence;
@@ -9,7 +11,7 @@ TWINKLE_TWINKLE = {
     notes: [
         { pitch: 60, startTime: 0.0, endTime: 0.5 },
         { pitch: 60, startTime: 0.5, endTime: 1.0 },
-        { pitch: 65, startTime: 1.0, endTime: 1.5 },
+        { pitch: 67, startTime: 1.0, endTime: 1.5 },
         { pitch: 67, startTime: 1.5, endTime: 2.0 },
         { pitch: 69, startTime: 2.0, endTime: 2.5 },
         { pitch: 69, startTime: 2.5, endTime: 3.0 },
@@ -17,18 +19,10 @@ TWINKLE_TWINKLE = {
         { pitch: 65, startTime: 4.0, endTime: 4.5 },
         { pitch: 65, startTime: 4.5, endTime: 5.0 },
         { pitch: 64, startTime: 5.0, endTime: 5.5 },
-        { pitch: 60, startTime: 5.5, endTime: 6.0 },
-        { pitch: 65, startTime: 6.0, endTime: 6.5 },
-        { pitch: 67, startTime: 6.5, endTime: 7.0 },
+        { pitch: 64, startTime: 5.5, endTime: 6.0 },
+        { pitch: 62, startTime: 6.0, endTime: 6.5 },
+        { pitch: 62, startTime: 6.5, endTime: 7.0 },
         { pitch: 60, startTime: 7.0, endTime: 8.0 },
-
-        { pitch: 65, startTime: 8.0, endTime: 9.0 },
-        { pitch: 65, startTime: 9.0, endTime: 10.0 },
-        { pitch: 60, startTime: 10.0, endTime: 11.0 },
-        { pitch: 65, startTime: 11.0, endTime: 12.0 },
-        { pitch: 65, startTime: 12.0, endTime: 13.0 },
-        { pitch: 64, startTime: 13.0, endTime: 14.0 },
-
     ],
     totalTime: 8
 };
@@ -36,87 +30,21 @@ TWINKLE_TWINKLE = {
 // MIDI to Note Sequence 
 
 
-if (marioSelected.checked) {
-    MIDItoNoteSequence('/mario.mid')
-} else if (otherSelected.checked) {
-    // otherSelected = 
-} else {
-    songPath = TWINKLE_TWINKLE
-}
+// if (marioSelected.checked) {
+//     MIDItoNoteSequence('/mario.mid')
+// } else if (otherSelected.checked) {
+//     // otherSelected = 
+// } else {
+songPath = TWINKLE_TWINKLE;
+// }
 
 function MIDItoNoteSequence(songPath) {
     // convert Blob containing MIDI to a note sequence 
-
 }
 
 
 function generateTransitions(noteSequence) {
-    // var n = document.getElementById("nOrder").value
 
-    // var uniquePitches = TWINKLE_TWINKLE.notes.map(item => item.pitch).filter((value, index, self) => self.indexOf(value) === index)
-    //     // for each unique pitch in song, determine transitions 
-    // var matrix = new Array([]);
-    // var pitchCols = new Array();
-    // var pitchRows = new Array();
-
-    // // for each note in the sequence 
-    // for (var i = n; i < noteSequence.notes.length; i++) {
-    //     var prev2 = noteSequence.notes[i - 2]
-    //     var prev1 = noteSequence.notes[i - 1]
-    //     var curr = noteSequence.notes[i]
-    //     var currIndex; // corresponds to col
-    //     var prevIndex; // corresponds to row
-
-
-    //     // if pitch not in matrix, add pitch to list
-    //     if (pitchCols.includes(curr.pitch) == false) {
-    //         pitchCols.push(curr.pitch)
-    //         console.log("MAKING NEW COL")
-    //     }
-
-    //     // which col
-    //     currIndex = pitchCols.indexOf(curr.pitch);
-
-    //     // determine if prev combo is in matrix
-    //     if (pitchRows.includes(prev2.pitch + "," + prev1.pitch)) {
-    //         // both exist, so add 1 to that element 
-    //         console.log("PREV2 EXISTS")
-    //         prevIndex = pitchRows.indexOf(prev2.pitch + "," + prev1.pitch)
-    //         matrix[prevIndex][currIndex] = matrix[prevIndex][currIndex] + 1
-    //     } else {
-    //         // prev doesnt exist yet, make new row 
-    //         console.log("MAKING NEW ROW");
-    //         matrix.push([0]);
-    //         pitchRows.push(prev2.pitch + "," + prev1.pitch)
-    //         prevIndex = pitchRows.indexOf(prev2.pitch + "," + prev1.pitch)
-    //         matrix[prevIndex][currIndex] = 1
-    //     }
-
-    //     console.log("curr index and prev are " + currIndex + prevIndex)
-    //     console.log("current is " + JSON.stringify(curr))
-    //     console.log("pitch rows are  " + JSON.stringify(pitchRows))
-    //     console.log("pitch cols are  " + JSON.stringify(pitchCols))
-    //     console.table(matrix)
-
-    // }
-
-    // console.log(JSON.stringify(matrix[0]))
-    //     // then normalize matrix so rows sum to 1 
-    // for (var i = 0; i < pitchRows.length; i++) {
-    //     var rowSum = matrix[i].reduce(add, 0)
-    //     console.log("rowSum = " + rowSum);
-
-    //     // then divide each col by rowSum 
-    //     for (var j = 0; j < pitchCols.length; j++) {
-    //         console.log("initial val = " + matrix[i][j]);
-    //         console.log("reducing and " + matrix[i][j] / rowSum)
-    //         matrix[i][j] = matrix[i][j] / rowSum
-    //     }
-    // }
-    // console.log('NEW MATRIX')
-    // console.table(matrix)
-
-    var n = parseInt(document.getElementById("nOrder").value);
     var noteGroups = new Array();
 
     for (var i = 0; i < noteSequence.notes.length - n; i++) {
@@ -164,17 +92,14 @@ function generateTransitions(noteSequence) {
         transitionMatrix[rowIdx][colIdx]++;
     }
 
-    // console.table(transitionMatrix);
-
     for (var r = 0; r < prevNotegroups.length; r++) {
         var rowSum = transitionMatrix[r].reduce(add, 0);
         for (var c = 0; c < currNotegroups.length; c++) {
             transitionMatrix[r][c] = transitionMatrix[r][c] / rowSum;
         }
-
     }
 
-    console.table(transitionMatrix);
+    return [prevNotegroups, currNotegroups, transitionMatrix];
 
 }
 
@@ -182,19 +107,103 @@ function add(accumulator, a) {
     return accumulator + a;
 }
 
-function calculateNextNote(noteSequence) {
+function calculateNextNotes(ns, numOfNotes) {
+
+    var noteSequence = ns;
+
+    var transitionMatrix_calc = generateTransitions(noteSequence);
+    var prevNotegroups = transitionMatrix_calc[0];
+    var currNotegroups = transitionMatrix_calc[1];
+    var transitionMatrix = transitionMatrix_calc[2];
+
+    for (var i = 0; i < numOfNotes; i++) {
+
+        var newIdx = noteSequence.notes.length;
+        var prevNotes = noteSequence.notes.slice(newIdx - n, newIdx);
+        var prevPitches = new Array();
+
+        for (var k = 0; k < n; k++) {
+            prevPitches.push(prevNotes[k].pitch);
+        }
+
+        prevNotes = prevPitches.join();
+
+        var currRowIdx = prevNotegroups.indexOf(prevNotes);
+
+        if (currRowIdx == -1) {
+            currRowIdx = 0;
+        }
+
+        var probability = transitionMatrix[currRowIdx];
+        var random = Math.random();
+
+        for (var j = 0; j < currNotegroups.length; j++) {
+            random -= probability[j];
+
+            if (random < 0) {
+                noteSequence.notes.push({ pitch: parseInt(currNotegroups[j]), startTime: noteSequence.totalTime, endTime: noteSequence.totalTime + 0.5 });
+                noteSequence.totalTime = noteSequence.totalTime + 0.5;
+                break;
+            }
+        }
+    }
+    return noteSequence;
 
 }
 
-function playMarkov(song) {
-    var transition_matrix = generateTransitions(song)
+function playMarkov(ns) {
+    var noteSequence = calculateNextNotes(ns, numOfNotes);
+    console.log(noteSequence);
+
+    // console.log(noteSequence.notes);
+    noteSequence.notes.forEach(note => {
+        playNote(note);
+    });
+}
+
+function midiToFreq(m) {
+    return Math.pow(2, (m - 69) / 12) * 440;
+}
+
+function playNote(note) {
+
+    var activeOscillators = [];
+
+    offset = 1; //it takes a bit of time to queue all these events
+
+    const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
+    // var gainCount = 1; // Number of notes playing simultaneously/pressed down
+
+    var gainNode = audioCtx.createGain();
+
+    for (var i = 0; i < additiveOscillatorCount; i++) {
+        const additiveOsc = audioCtx.createOscillator();
+        // additiveOsc.frequency.value = midiToFreq(note.pitch) + Math.random() * 15;
+        additiveOsc.frequency.value = midiToFreq(note.pitch);
+        additiveOsc.connect(gainNode);
+        activeOscillators.push(additiveOsc);
+    }
+
+    for (var i = 0; i < additiveOscillatorCount; i++) {
+        activeOscillators[i].start();
+    }
+
+    // Envelope
+
+    gainNode.connect(audioCtx.destination);
+
+    gainNode.gain.value = 0;
+    gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
+    gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.1, 0.05);
+    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.05, 0.01);
+
 }
 
 const playButton = document.querySelector('button');
 playButton.addEventListener('click', function() {
-    audioCtx = new(window.AudioContext || window.webkitAudioContext)
+    audioCtx = new(window.AudioContext || window.webkitAudioContext);
 
-    generateTransitions(TWINKLE_TWINKLE);
+    playMarkov(TWINKLE_TWINKLE);
 
 }, false);
 
