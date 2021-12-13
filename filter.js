@@ -2,6 +2,7 @@
 const marioSelected = document.getElementById('Mario');
 const otherSelected = document.getElementById('Other1');
 var n = parseInt(document.getElementById("nOrder").value);
+var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
 
 var songSelected;
 var noteSequence;
@@ -29,13 +30,13 @@ TWINKLE_TWINKLE = {
 // MIDI to Note Sequence 
 
 
-if (marioSelected.checked) {
-    MIDItoNoteSequence('/mario.mid')
-} else if (otherSelected.checked) {
-    // otherSelected = 
-} else {
-    songPath = TWINKLE_TWINKLE;
-}
+// if (marioSelected.checked) {
+//     MIDItoNoteSequence('/mario.mid')
+// } else if (otherSelected.checked) {
+//     // otherSelected = 
+// } else {
+songPath = TWINKLE_TWINKLE;
+// }
 
 function MIDItoNoteSequence(songPath) {
     // convert Blob containing MIDI to a note sequence 
@@ -106,7 +107,7 @@ function add(accumulator, a) {
     return accumulator + a;
 }
 
-function calculateNextNotes(ns, numOfNotes = 50) {
+function calculateNextNotes(ns, numOfNotes) {
 
     var noteSequence = ns;
 
@@ -133,8 +134,6 @@ function calculateNextNotes(ns, numOfNotes = 50) {
             currRowIdx = 0;
         }
 
-        console.log(currRowIdx);
-
         var probability = transitionMatrix[currRowIdx];
         var random = Math.random();
 
@@ -153,10 +152,10 @@ function calculateNextNotes(ns, numOfNotes = 50) {
 }
 
 function playMarkov(ns) {
-    var noteSequence = calculateNextNotes(ns);
+    var noteSequence = calculateNextNotes(ns, numOfNotes);
     console.log(noteSequence);
 
-    console.log(noteSequence.notes);
+    // console.log(noteSequence.notes);
     noteSequence.notes.forEach(note => {
         playNote(note);
     });
