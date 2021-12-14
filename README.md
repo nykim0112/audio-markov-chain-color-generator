@@ -1,8 +1,13 @@
 ## New Melody and Color Generator 
 
-https://github.com/Tonejs/Midi
+# Installation 
+install npm  
+Then in command line type ```npm install @tonejs/midi```
 
 
+
+
+# Our Notes
 Have 4 songs and 4 albums pre uploaded. Also add instructions for how a user can add more. 
 
 1. read in MIDI file and convert to note sequence 
