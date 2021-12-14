@@ -5,6 +5,7 @@ install npm
 Then in command line type ```npm install @tonejs/midi```
 
 
+# To run locally 
 
 
 # Our Notes
