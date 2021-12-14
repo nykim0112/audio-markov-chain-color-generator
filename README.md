@@ -1,8 +1,15 @@
-# song/album mood generator, markov to create new melody
+# New Melody and Color Generator 
 
-https://github.com/Tonejs/Midi
+## Installation 
+install npm if necessary <br />
+Then in command line type ```npm install @tonejs/midi```
 
 
+## To run locally 
+Run HTML file <br />
+If "dev tools failed to load SourceMap error" -> In DevTools (F12) -> Settings (F1), Disable both "enable JS source maps" and "enable CSS source maps" in "Preferences -> Sources"
+
+## Notes
 Have 4 songs and 4 albums pre uploaded. Also add instructions for how a user can add more. 
 
 1. read in MIDI file and convert to note sequence 
