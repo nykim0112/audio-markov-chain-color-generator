@@ -6,18 +6,58 @@
 </head>
 
 <body class="p-4">
-    <button>Play</button>
 
-    <!-- <h1>Select Song or Album</h1>
-    <input type="Radio" Name="Waveform" id="Mario" checked="checked">Super Mario
-    <input type="Radio" Name="Waveform" id="Other1">Other1
-    <input type="Radio" Name="Waveform" id="Other2">Other2 -->
+    <div class="p-3">
+        <button type="button" id="play" class="m-1">Play</button>
+        <button type="button" id="reset" class="m-1">Reset</button>
+    </div>
 
-    <p> Select n order </p>
-    <input type="range" id="nOrder" min="0" max="2" steps="1" value="2" list="nOrder"></input>
+    <div class="d-inline-flex">
+        <div class="row">
+            <div class="col-sm p-3 m-2">
+                <h6>Song/Album</h6>
+                <div>
+                    <input type="Radio" name="source" id="mario" checked="checked">
+                    <label for="mario">Super Mario</label>
+                </div>
 
-    <p> Select length of new melody </p>
-    <input type="range" id="numOfNotes" min="0" max="50" steps="1" value="25"></input>
+                <div>
+                    <input type="Radio" name="source" id="Other1">
+                    <label for="Other1">Other1</label>
+                </div>
+
+                <div>
+                    <input type="Radio" name="source" id="Other2">
+                    <label for="Other2">Other2</label>
+                </div>
+            </div>
+
+            <div class="col-sm p-3 m-2">
+                <h6> Order of Markov chain </h6>
+                <input type="number" id="nOrder" min="0" max="3" steps="1" value="2" list="nOrder"></input>
+            </div>
+
+            <div class="col-sm p-3 m-2">
+                <p> Length of generated melody </p>
+                <input type="range" id="numOfNotes" min="0" max="50" steps="1" value="25" list="tickmarks"></input>
+
+                <datalist id="tickmarks">
+                    <option value="0"></option>
+                    <option value="5"></option>
+                    <option value="10"></option>
+                    <option value="15"></option>
+                    <option value="20"></option>
+                    <option value="25"></option>
+                    <option value="30"></option>
+                    <option value="35"></option>
+                    <option value="40"></option>
+                    <option value="45"></option>
+                    <option value="50"></option>
+                    </datalist>
+            </div>
+        </div>
+    </div>
+
 
     <script src="filter.js"></script>
     <script src="https://unpkg.com/@tonejs/midi"></script>
