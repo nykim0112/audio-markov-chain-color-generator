@@ -1,9 +1,10 @@
 // Song 
-const marioSelected = document.getElementById('Mario');
+const marioSelected = document.getElementById('mario');
 const otherSelected = document.getElementById('Other1');
 var n = parseInt(document.getElementById("nOrder").value);
 var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
 
+var audioCtx;
 var songSelected;
 var noteSequence;
 
@@ -26,17 +27,6 @@ TWINKLE_TWINKLE = {
     ],
     totalTime: 8
 };
-
-// MIDI to Note Sequence 
-
-
-// if (marioSelected.checked) {
-//     MIDItoNoteSequence('/mario.mid')
-// } else if (otherSelected.checked) {
-//     // otherSelected = 
-// } else {
-songPath = TWINKLE_TWINKLE;
-// }
 
 function MIDItoNoteSequence(songPath) {
     // convert Blob containing MIDI to a note sequence 
@@ -109,7 +99,7 @@ function add(accumulator, a) {
 
 function calculateNextNotes(ns, numOfNotes) {
 
-    var noteSequence = ns;
+    var noteSequence = Object.assign({}, ns);
 
     var transitionMatrix_calc = generateTransitions(noteSequence);
     var prevNotegroups = transitionMatrix_calc[0];
@@ -152,8 +142,8 @@ function calculateNextNotes(ns, numOfNotes) {
 }
 
 function playMarkov(ns) {
+
     var noteSequence = calculateNextNotes(ns, numOfNotes);
-    console.log(noteSequence);
 
     // console.log(noteSequence.notes);
     noteSequence.notes.forEach(note => {
@@ -172,14 +162,13 @@ function playNote(note) {
     offset = 1; //it takes a bit of time to queue all these events
 
     const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
-    // var gainCount = 1; // Number of notes playing simultaneously/pressed down
 
     var gainNode = audioCtx.createGain();
 
     for (var i = 0; i < additiveOscillatorCount; i++) {
         const additiveOsc = audioCtx.createOscillator();
-        // additiveOsc.frequency.value = midiToFreq(note.pitch) + Math.random() * 15;
-        additiveOsc.frequency.value = midiToFreq(note.pitch);
+        additiveOsc.frequency.value = midiToFreq(note.pitch) + Math.random() * 15;
+        // additiveOsc.frequency.value = midiToFreq(note.pitch);
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
     }
@@ -199,29 +188,40 @@ function playNote(note) {
 
 }
 
-const playButton = document.querySelector('button');
-playButton.addEventListener('click', function() {
-    audioCtx = new(window.AudioContext || window.webkitAudioContext);
+const playButton = document.getElementById('play');
+const resetButton = document.getElementById('reset');
 
-    playMarkov(TWINKLE_TWINKLE);
+playButton.addEventListener('click', function() {
+
+    if (!audioCtx) {
+
+        audioCtx = new(window.AudioContext || window.webkitAudioContext);
+        playButton.innerHTML = "Pause";
+
+        playMarkov(TWINKLE_TWINKLE);
+        return;
+    }
+
+    if (audioCtx.state === 'suspended') {
+        playButton.innerHTML = "Pause";
+        audioCtx.resume();
+    }
+
+    if (audioCtx.state === 'running') {
+        playButton.innerHTML = "Play";
+        audioCtx.suspend();
+    }
 
 }, false);
 
-/*
-if (navigator.mediaDevices) {
-    navigator.mediaDevices.getUserMedia({ "audio": true }).then((stream) => {
-        const microphone = audioCtx.createMediaStreamSource(stream);
-        const gainNode = audioCtx.createGain();
-        gainNode.gain.value = 0.5;
-        microphone.connect(gainNode).connect(audioCtx.destination);
-    }).catch((err) => {
-        console.log("ERROR: Unable to access microphone.");
-        console.log(err);
-        // browser unable to access microphone
-        // (check to see if microphone is attached)
-    });
-} else {
-    console.log("ERROR: Unable to access media devices.");
-    // browser unable to access media devices
-    // (update your browser)
-}*/
+resetButton.addEventListener('click', function() {
+
+    if (audioCtx) {
+        audioCtx.close();
+        audioCtx = false;
+
+        playButton.innerHTML = "Play";
+        return;
+    }
+
+}, false);
