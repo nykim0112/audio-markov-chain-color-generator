@@ -1,6 +1,10 @@
 // Song 
-const marioSelected = document.getElementById('mario');
-const otherSelected = document.getElementById('Other1');
+var file = document.getElementById("file")
+var btn = document.getElementById("custom-button")
+
+const midi = new Midi()
+let currentMidi = null;
+
 var n = parseInt(document.getElementById("nOrder").value);
 var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
 
@@ -28,21 +32,50 @@ TWINKLE_TWINKLE = {
     totalTime: 8
 };
 
-function MIDItoNoteSequence(songPath) {
-    // convert Blob containing MIDI to a note sequence 
+function parseFile(file){
+    console.log("parse")
+    const reader = new FileReader();
+      reader.onload = function (e) {
+        //console.log(res.target.result); // Print file contents
+  
+        const midi = new Midi(e.target.result);
+        
+                      document.querySelector(
+                          "#ResultsText"
+                      ).value = JSON.stringify(midi, undefined, 2); 
+                      currentMidi = midi;
+      };
+        reader.readAsArrayBuffer(file);
 }
+  
+  
+btn.addEventListener("click", function() {
+    file.click(); 
+}); 
+
+file.addEventListener("change", (e) => {
+    console.log("file added" + file.value)
+
+    //get the files
+    const files = e.target.files;
+    if (files.length > 0) {
+        const file = files[0];
+        parseFile(file)
+    }
+}); 
 
 
 function generateTransitions(noteSequence) {
 
     var noteGroups = new Array();
 
-    for (var i = 0; i < noteSequence.notes.length - n; i++) {
+    for (var i = 0; i < noteSequence.length - n; i++) {
         var noteseq = new Array();
 
         for (var j = i; j < i + n + 1; j++) {
             // console.log(i, i + n + 1, j);
-            noteseq.push(noteSequence.notes[j].pitch);
+            console.log("adding " + noteSequence[j].name)
+            noteseq.push(noteSequence[j].name)
         }
         noteGroups[i] = noteseq;
     }
@@ -97,19 +130,19 @@ function add(accumulator, a) {
     return accumulator + a;
 }
 
-function calculateNextNotes(ns, numOfNotes) {
+function calculateNextNotes(notes, numOfNotes) {
 
-    var noteSequence = Object.assign({}, ns);
+    //var noteSequence = Object.assign({}, notes);
 
-    var transitionMatrix_calc = generateTransitions(noteSequence);
+    var transitionMatrix_calc = generateTransitions(notes);
     var prevNotegroups = transitionMatrix_calc[0];
     var currNotegroups = transitionMatrix_calc[1];
     var transitionMatrix = transitionMatrix_calc[2];
 
     for (var i = 0; i < numOfNotes; i++) {
 
-        var newIdx = noteSequence.notes.length;
-        var prevNotes = noteSequence.notes.slice(newIdx - n, newIdx);
+        var newIdx = notes.length;
+        var prevNotes = notes.slice(newIdx - n, newIdx);
         var prevPitches = new Array();
 
         for (var k = 0; k < n; k++) {
@@ -130,23 +163,28 @@ function calculateNextNotes(ns, numOfNotes) {
         for (var j = 0; j < currNotegroups.length; j++) {
             random -= probability[j];
 
+            // TODO
+            /*
             if (random < 0) {
-                noteSequence.notes.push({ pitch: parseInt(currNotegroups[j]), startTime: noteSequence.totalTime, endTime: noteSequence.totalTime + 0.5 });
+                notes.push({ pitch: parseInt(currNotegroups[j]), startTime: noteSequence.totalTime, endTime: noteSequence.totalTime + 0.5 });
                 noteSequence.totalTime = noteSequence.totalTime + 0.5;
                 break;
-            }
+            }*/
         }
     }
     return noteSequence;
 
 }
 
-function playMarkov(ns) {
+function playMarkov(midi) {
 
-    var noteSequence = calculateNextNotes(ns, numOfNotes);
+    var notes = midi.tracks[0].notes 
+    //console.log("notes are " + JSON.stringify(notes))
+
+    var noteSequence = calculateNextNotes(notes, numOfNotes);
 
     // console.log(noteSequence.notes);
-    noteSequence.notes.forEach(note => {
+    notes.forEach(note => {
         playNote(note);
     });
 }
@@ -167,7 +205,7 @@ function playNote(note) {
 
     for (var i = 0; i < additiveOscillatorCount; i++) {
         const additiveOsc = audioCtx.createOscillator();
-        additiveOsc.frequency.value = midiToFreq(note.pitch) + Math.random() * 15;
+        additiveOsc.frequency.value = midiToFreq(note.name) + Math.random() * 15;
         // additiveOsc.frequency.value = midiToFreq(note.pitch);
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
@@ -198,7 +236,8 @@ playButton.addEventListener('click', function() {
         audioCtx = new(window.AudioContext || window.webkitAudioContext);
         playButton.innerHTML = "Pause";
 
-        playMarkov(TWINKLE_TWINKLE);
+        //console.log("current midi is " + JSON.stringify(currentMidi))
+        playMarkov(currentMidi);
         return;
     }
 

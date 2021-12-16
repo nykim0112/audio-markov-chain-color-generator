@@ -1,0 +1,96 @@
+{
+  "header": {
+    "keySignatures": [
+      {
+        "key": "C",
+        "scale": "major",
+        "ticks": 0
+      }
+    ],
+    "meta": [],
+    "name": "",
+    "ppq": 480,
+    "tempos": [],
+    "timeSignatures": [
+      {
+        "ticks": 0,
+        "timeSignature": [
+          4,
+          4
+        ],
+        "measures": 0
+      }
+    ]
+  },
+  "tracks": [
+    {
+      "channel": 0,
+      "controlChanges": {
+        "7": [
+          {
+            "number": 7,
+            "ticks": 2,
+            "time": 0.0020833333333333333,
+            "value": 0.7874015748031497
+          }
+        ],
+        "10": [
+          {
+            "number": 10,
+            "ticks": 4,
+            "time": 0.004166666666666667,
+            "value": 0.5039370078740157
+          }
+        ],
+        "91": [
+          {
+            "number": 91,
+            "ticks": 6,
+            "time": 0.00625,
+            "value": 0.23622047244094488
+          }
+        ],
+        "93": [
+          {
+            "number": 93,
+            "ticks": 8,
+            "time": 0.008333333333333333,
+            "value": 0.23622047244094488
+          }
+        ]
+      },
+      "pitchBends": [],
+      "instrument": {
+        "family": "strings",
+        "name": "violin",
+        "number": 40
+      },
+      "name": "",
+      "notes": [
+        {
+          "duration": 0.12395833333333334,
+          "durationTicks": 119,
+          "midi": 76,
+          "name": "E5",
+          "ticks": 0,
+          "time": 0,
+          "velocity": 0.6299212598425197
+        },
+        {
+          "duration": 0.12395833333333334,
+          "durationTicks": 119,
+          "midi": 72,
+          "name": "C5",
+          "ticks": 0,
+          "time": 0,
+          "velocity": 0.6299212598425197
+        },
+        {
+          "duration": 0.24895833333333334,
+          "durationTicks": 239,
+          "midi": 76,
+          "name": "E5",
+          "ticks": 120,
+          "time": 0.125,
+          "velocity": 0.6299212598425197
+        },
