@@ -1,39 +1,3 @@
-// import * as Tone from 'tone';
-
-var file = document.getElementById("file");
-const uploadBtn = document.getElementById("uploadFile");
-const playButton = document.getElementById('play');
-const resetButton = document.getElementById('reset');
-var n = parseInt(document.getElementById("nOrder").value);
-var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
-
-const midi = new Midi();
-var currentMidi;
-
-var audioCtx;
-var songSelected;
-// var noteSequence;
-
-TWINKLE_TWINKLE = {
-    notes: [
-        { pitch: 60, startTime: 0.0, endTime: 0.5 },
-        { pitch: 60, startTime: 0.5, endTime: 1.0 },
-        { pitch: 67, startTime: 1.0, endTime: 1.5 },
-        { pitch: 67, startTime: 1.5, endTime: 2.0 },
-        { pitch: 69, startTime: 2.0, endTime: 2.5 },
-        { pitch: 69, startTime: 2.5, endTime: 3.0 },
-        { pitch: 67, startTime: 3.0, endTime: 4.0 },
-        { pitch: 65, startTime: 4.0, endTime: 4.5 },
-        { pitch: 65, startTime: 4.5, endTime: 5.0 },
-        { pitch: 64, startTime: 5.0, endTime: 5.5 },
-        { pitch: 64, startTime: 5.5, endTime: 6.0 },
-        { pitch: 62, startTime: 6.0, endTime: 6.5 },
-        { pitch: 62, startTime: 6.5, endTime: 7.0 },
-        { pitch: 60, startTime: 7.0, endTime: 8.0 },
-    ],
-    totalTime: 8
-};
-
 function parseFile(file) {
 
     /*
@@ -56,8 +20,6 @@ function generateTransitions(midi) {
     Generates transition matrix with given midi file
     */
 
-    console.log(midi);
-
     var midiNoteSequence = midi.tracks[0].notes; // array of notes and their properties (ex. duration)
     var nNotesGroups = new Array(); // array of n-note groups
 
@@ -74,7 +36,7 @@ function generateTransitions(midi) {
 
     // Iterate through nNotesGroups and populate prevNoteSeqs and currNoteSeqs
 
-    // var transitionMatrix = new Array();
+    var transitionMatrix = new Array();
     var prevNoteSeqs = new Array();
     var currNoteSeqs = new Array();
 
@@ -103,8 +65,8 @@ function generateTransitions(midi) {
     for (var i = 0; i < nNotesGroups.length; i++) {
 
         var currNoteSeq = nNotesGroups[i];
-        var row = currNoteSeq.slice(0, -1).join();
-        var col = currNoteSeq.slice(-1).join("");
+        var row = currentNNotes.slice(0, -1).join();
+        var col = currentNNotes.slice(-1).join("");
 
         var rowIdx = prevNoteSeqs.indexOf(row);
         var colIdx = currNoteSeqs.indexOf(col);
@@ -120,8 +82,6 @@ function generateTransitions(midi) {
             transitionMatrix[r][c] = transitionMatrix[r][c] / rowSum;
         }
     }
-
-    console.table(transitionMatrix);
 
     return [prevNoteSeqs, currNoteSeqs, transitionMatrix];
 
@@ -143,19 +103,16 @@ function calculateNextNotes(midi, lenOfSequence) {
     var currNotegroups = transitionMatrix_calc[1];
     var transitionMatrix = transitionMatrix_calc[2];
 
-    var duration = 0;
-
     // Take the first n notes from the midi file to newSequence
     for (var i = 0; i < n; i++) {
-        newSequence.push({ note: midiNoteSequence[i].name, startTime: duration, endTime: duration + 0.5 })
-        duration += 0.5;
+        newSequence.push(midiNoteSequence[i].name);
     }
 
     // Generate next lenOfSequence number of notes with transition matrix
     for (var i = 0; i < lenOfSequence - 2; i++) {
 
         var currIdx = newSequence.length; // index of currently generated note
-        var prevNotes = newSequence.slice(currIdx - n, currIdx);
+        var prevNotes = newSequence.slice(newIdx - n, newIdx);
         var prevNoteSeq = new Array();
 
         // Append previous pitches to find them within prevNotegroups
@@ -180,15 +137,12 @@ function calculateNextNotes(midi, lenOfSequence) {
             randomProb -= probabilities[j];
 
             if (randomProb < 0) {
-                newSequence.push({ note: currNotegroups[j], startTime: duration, endTime: duration + 0.5 }); // MODIFY HERE TO CHANGE FORMAT OF 
-                duration = duration + 0.5;
+                newSequence.push(Tone.frequencu(currNotegroups[j])); // MODIFY HERE TO CHANGE FORMAT OF 
                 break;
             }
         }
 
     }
-
-    console.log(newSequence);
 
     return newSequence;
 
@@ -203,92 +157,3 @@ function playMarkov(midi) {
     });
 
 }
-
-function midiToFreq(m) {
-    return Math.pow(2, (m - 69) / 12) * 440;
-}
-
-function playNote(note) {
-
-    var activeOscillators = [];
-
-    offset = 1; //it takes a bit of time to queue all these events
-
-    const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
-
-    var gainNode = audioCtx.createGain();
-
-    for (var i = 0; i < additiveOscillatorCount; i++) {
-        const additiveOsc = audioCtx.createOscillator();
-        additiveOsc.frequency.value = parseInt(Tone.Frequency(note.note).toFrequency());
-        // additiveOsc.frequency.value = midiToFreq(note.pitch);
-        additiveOsc.connect(gainNode);
-        activeOscillators.push(additiveOsc);
-    }
-
-    for (var i = 0; i < additiveOscillatorCount; i++) {
-        activeOscillators[i].start();
-    }
-
-    // Envelope
-
-    gainNode.connect(audioCtx.destination);
-
-    gainNode.gain.value = 0;
-    gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
-    gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.1, 0.05);
-    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.05, 0.01);
-
-}
-
-playButton.addEventListener('click', function() {
-
-    if (!audioCtx) {
-
-        audioCtx = new(window.AudioContext || window.webkitAudioContext);
-        playButton.innerHTML = "Pause";
-
-        //console.log("current midi is " + JSON.stringify(currentMidi))
-        // generateTransitions(currentMidi);
-        playMarkov(currentMidi);
-        return;
-    }
-
-    if (audioCtx.state === 'suspended') {
-        playButton.innerHTML = "Pause";
-        audioCtx.resume();
-    }
-
-    if (audioCtx.state === 'running') {
-        playButton.innerHTML = "Play";
-        audioCtx.suspend();
-    }
-
-}, false);
-
-resetButton.addEventListener('click', function() {
-
-    if (audioCtx) {
-        audioCtx.close();
-        audioCtx = false;
-
-        playButton.innerHTML = "Play";
-        return;
-    }
-
-}, false);
-
-uploadBtn.addEventListener("click", function() {
-    file.click();
-});
-
-file.addEventListener("change", (e) => {
-    console.log("file added: " + file.value)
-
-    //get the files
-    const files = e.target.files;
-    if (files.length > 0) {
-        const file = files[0];
-        parseFile(file)
-    }
-});

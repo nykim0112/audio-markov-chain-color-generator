@@ -1,42 +1,35 @@
-
 <!doctype html>
 <html lang="en">
 
 <head>
-		<title>New Melody Color Generator</title>
-		<script
-			type="text/javascript"
-			src="https://unpkg.com/tone@latest/build/Tone.js"
-		></script>
-		<script
-			type="text/javascript"
-			src="https://unpkg.com/@tonejs/ui@0.0.8/build/tonejs-ui.js"
-		></script>
-		<script
-			type="text/javascript"
-			src="https://unpkg.com/@tonejs/midi"
-		></script>
-        <script src="./node_modules/@tonejs/midi/build/Midi.js"
-		></script>
-        <script src="https://cdn.jsdelivr.net/npm/@magenta/music@^1.0.0"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <title>New Melody Color Generator</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script type="text/javascript" src="https://unpkg.com/tone@latest/build/Tone.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@tonejs/ui@0.0.8/build/tonejs-ui.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@tonejs/midi"></script>
+    <script src="./node_modules/@tonejs/midi/build/Midi.js"></script>
+    <script src="./node_modules/tone/build/Tone.js"></script>
 
 </head>
 
 <body class="p-4">
 
-    <div class="p-3">
-        <button type="button" id="play" class="m-1">Play</button>
-        <button type="button" id="reset" class="m-1">Reset</button>
+    <div class="m-2">
+        <button type="button" id="play" class="btn btn-primary m-1">Play</button>
+        <button type="button" id="reset" class="btn btn-primary m-1">Reset</button>
+        <input type="file" id="file" accept="audio.midi" hidden="hidden" />
+        <button class="btn btn-primary m-1" type="button" id="uploadFile">Upload File</button>
     </div>
 
     <div class="d-inline-flex">
         <div class="row">
-            <div class="col-sm p-3 m-2">
+            <div class="col-md p-3 m-2">
                 <h6>Song/Album</h6>
                 <div>
                     <input type="Radio" name="source" id="mario" checked="checked">
-                    <label for="mario">Super Mario</label>
+                    <label for="mario">Default (Super Mario)</label>
                 </div>
 
                 <div>
@@ -50,13 +43,13 @@
                 </div>
             </div>
 
-            <div class="col-sm p-3 m-2">
+            <div class="col-md p-3 m-2">
                 <h6> Order of Markov chain </h6>
                 <input type="number" id="nOrder" min="0" max="3" steps="1" value="2" list="nOrder"></input>
             </div>
 
-            <div class="col-sm p-3 m-2">
-                <p> Length of generated melody </p>
+            <div class="col-md p-3 m-2">
+                <h6> Length of generated melody </h6>
                 <input type="range" id="numOfNotes" min="0" max="50" steps="1" value="25" list="tickmarks"></input>
 
                 <datalist id="tickmarks">
@@ -76,17 +69,16 @@
         </div>
     </div>
 
-
-    <input type="file" id="file" accept="audio.midi" hidden="hidden"/>
-		<button type="button"  id="custom-button">Upload File</button>
-
-		<div id="Results">
-			<textarea
-				id="ResultsText"
-				placeholder="json output..."
-			></textarea>
-		</div>
+    <div id="Results">
+        <textarea id="ResultsText" placeholder="json output..."></textarea>
+    </div>
     <script src="filter.js"></script>
-    
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
 </body>
+
 </html>
