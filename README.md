@@ -11,11 +11,7 @@ If "dev tools failed to load SourceMap error" -> In DevTools (F12) -> Settings (
 
 ##  TODOs 
 - get notes to play separately (prob an Amy task)
-- chorus extractor, prob spinoff of vigenere cipher decoding (ashley)
-- create pitch to color mapping. thinking we do this with note name (like just the letter part)
-- connect color part to our current front end 
 - multiple midi file option 
-- add front end track options (amy)
 
 
 ## Code Outline
