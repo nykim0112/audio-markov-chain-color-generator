@@ -1,4 +1,4 @@
-// import * as Tone from 'tone';
+//import * as Tone from 'tone';
 
 var file = document.getElementById("file");
 const uploadBtn = document.getElementById("uploadFile");
@@ -50,16 +50,14 @@ function parseFile(file) {
     reader.readAsArrayBuffer(file);
 }
 
-function generateTransitions(midi) {
+function generateTransitions(midiNoteSequence) {
 
     /*
     Generates transition matrix with given midi file
     */
 
-    console.log(midi);
-
-    var midiNoteSequence = midi.tracks[0].notes; // array of notes and their properties (ex. duration)
     var nNotesGroups = new Array(); // array of n-note groups
+    console.log("length " + midiNoteSequence.length)
 
     // iterate through to make groups of n notes and append to nNoteGroups
     for (var i = 0; i < midiNoteSequence.length - n; i++) {
@@ -67,7 +65,7 @@ function generateTransitions(midi) {
         var nNote = new Array();
 
         for (var j = i; j < i + n + 1; j++) {
-            nNote.push(midiNoteSequence[j].name);
+            nNote.push(midiNoteSequence[j].midi);
         }
         nNotesGroups[i] = nNote;
     }
@@ -134,11 +132,14 @@ function add(accumulator, a) {
 
 function calculateNextNotes(midi, lenOfSequence, trackNo) {
 
+    console.log('track number ' + trackNo)
     var newSequence = new Array(); // Sequence of new notes to be played;
     var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
+    console.log("midi sequence")
+    console.log(JSON.stringify(midiNoteSequence))
     // Split return value of generateTransitions into three diff variables
-    var transitionMatrix_calc = generateTransitions(midi);
+    var transitionMatrix_calc = generateTransitions(midiNoteSequence);
     var prevNotegroups = transitionMatrix_calc[0];
     var currNotegroups = transitionMatrix_calc[1];
     var transitionMatrix = transitionMatrix_calc[2];
@@ -147,7 +148,7 @@ function calculateNextNotes(midi, lenOfSequence, trackNo) {
 
     // Take the first n notes from the midi file to newSequence
     for (var i = 0; i < n; i++) {
-        newSequence.push({ note: midiNoteSequence[i].name, startTime: duration, endTime: duration + 0.5 })
+        newSequence.push({ midi: midiNoteSequence[i].midi, startTime: duration, endTime: duration + 0.5 })
         duration += 0.5;
     }
 
@@ -160,7 +161,7 @@ function calculateNextNotes(midi, lenOfSequence, trackNo) {
 
         // Append previous pitches to find them within prevNotegroups
         for (var k = 0; k < n; k++) {
-            prevNoteSeq.push(prevNotes[k].name);
+            prevNoteSeq.push(prevNotes[k].midi);
         }
 
         // Find the previous n note sequence in the row
@@ -180,7 +181,7 @@ function calculateNextNotes(midi, lenOfSequence, trackNo) {
             randomProb -= probabilities[j];
 
             if (randomProb < 0) {
-                newSequence.push({ note: currNotegroups[j], startTime: duration, endTime: duration + 0.5 }); // MODIFY HERE TO CHANGE FORMAT OF 
+                newSequence.push({ midi: currNotegroups[j], startTime: duration, endTime: duration + 0.5 }); // MODIFY HERE TO CHANGE FORMAT OF 
                 duration = duration + 0.5;
                 break;
             }
@@ -210,11 +211,12 @@ function playMarkov(midi) {
     // get the value for the instrument name 
 
     // hardcoding...
-    trackNo = 0; 
+    trackNo = 2; 
 
     var noteSequence = calculateNextNotes(midi, numOfNotes, trackNo);
 
     noteSequence.forEach(note => {
+        console.log("note is " + JSON.stringify(note))
         playNote(note);
     });
 
@@ -236,7 +238,8 @@ function playNote(note) {
 
     for (var i = 0; i < additiveOscillatorCount; i++) {
         const additiveOsc = audioCtx.createOscillator();
-        additiveOsc.frequency.value = parseInt(Tone.Frequency(note.note).toFrequency());
+        console.log("this is " + Tone.Frequency(note.midi, "midi"))
+        additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi");
         // additiveOsc.frequency.value = midiToFreq(note.pitch);
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
