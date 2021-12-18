@@ -1,18 +1,19 @@
-//import * as Tone from 'tone';
-
 var file = document.getElementById("file");
+const control_panel = document.getElementById("control_panel");
 const uploadBtn = document.getElementById("uploadFile");
 const playButton = document.getElementById('play');
 const resetButton = document.getElementById('reset');
 var n = parseInt(document.getElementById("nOrder").value);
 var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
+var selectedTrack;
 
 const midi = new Midi();
 var currentMidi;
 
+var trackNo;
 var audioCtx;
 var songSelected;
-// var noteSequence;
+var trackNameNumber;
 
 TWINKLE_TWINKLE = {
     notes: [
@@ -43,11 +44,55 @@ function parseFile(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const parsedMidi = new Midi(e.target.result);
-        document.querySelector("#ResultsText").value = JSON.stringify(parsedMidi, undefined, 2);
 
         currentMidi = parsedMidi;
+
+        // Determine which track to use 
+        trackNameNumber = {}
+
+        for (var i = 0; i < currentMidi.tracks.length; i++) {
+            //console.log("track is " + JSON.stringify(track))
+            if (currentMidi.tracks[i].instrument.name != "" && currentMidi.tracks[i].notes.length != 0) {
+                trackNameNumber[currentMidi.tracks[i].instrument.name] = i;
+            }
+        }
+
+        // somehow present the keys in trackNameNumber, then user selects 
+        // get the value for the instrument name 
+        var trackSelectionPanel = document.createElement("div");
+        trackSelectionPanel.classList.add('col-md', 'p-3', 'm-2');
+
+        var trackSelectionPanel_header = document.createElement('h6');
+        trackSelectionPanel_header.innerHTML = "Select a track";
+        trackSelectionPanel.appendChild(trackSelectionPanel_header);
+
+        Object.keys(trackNameNumber).forEach(function(trackName) {
+            var selection = document.createElement('div');
+            var radioButton = document.createElement('input');
+            var label = document.createElement('label');
+
+            radioButton.type = "Radio";
+            radioButton.name = "track";
+            radioButton.id = trackName;
+            selection.appendChild(radioButton);
+
+            label.htmlFor = trackName;
+            label.innerHTML = trackName;
+            selection.appendChild(label);
+
+            trackSelectionPanel.appendChild(selection);
+        });
+
+        control_panel.appendChild(trackSelectionPanel);
+
+        var tracks = document.getElementsByName('track'); // get all radio buttons
+        tracks[0].checked = "checked";
+        selectedTrack = document.querySelector('input[name="track"]:checked');
+
     };
     reader.readAsArrayBuffer(file);
+
+
 }
 
 
@@ -66,7 +111,6 @@ function generateTransitions(midiNoteSequence) {
 
         var nNote = new Array();
 
-
         for (var j = i; j < i + n + 1; j++) {
             nNote.push(midiNoteSequence[j].midi);
         }
@@ -75,7 +119,6 @@ function generateTransitions(midiNoteSequence) {
 
     // Iterate through nNotesGroups and populate prevNoteSeqs and currNoteSeqs
 
-    // var transitionMatrix = new Array();
     var prevNoteSeqs = new Array();
     var currNoteSeqs = new Array();
 
@@ -135,7 +178,10 @@ function add(accumulator, a) {
 
 function calculateNextNotes(chorusSequence, lenOfSequence) {
 
+    console.log('track number ' + trackNo);
     var newSequence = new Array(); // Sequence of new notes to be played;
+    console.log(midi.tracks[trackNo]);
+    var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
     // Split return value of generateTransitions into three diff variables
     var transitionMatrix_calc = generateTransitions(chorusSequence);
@@ -196,24 +242,35 @@ function calculateNextNotes(chorusSequence, lenOfSequence) {
 
 }
 
-function playMarkov(midi) {
+function playMarkov(midi, trackNo) {
 
-    // Determine which track to use 
-    var trackNameNumber = {}
-    var trackNo; 
+    // // Determine which track to use 
+    // var trackNameNumber = {}
+    // var trackNo;
 
-    for(var i = 0; i < midi.tracks.length; i ++){
-        //console.log("track is " + JSON.stringify(midi.tracks[i]))
-        if(midi.tracks[i].instrument.name != "" && midi.tracks[i].notes  != []){
-            trackNameNumber[midi.tracks[i].instrument.name] = trackNo
-        }
-    } 
+    // for (var i = 0; i < midi.tracks.length; i++) {
+    //     //console.log("track is " + JSON.stringify(track))
+    //     if (midi.tracks[i].instrument.name != "" && midi.tracks[i].notes != []) {
+    //         trackNameNumber[midi.tracks[i].instrument.name] = i;
+    //     }
+    // }
 
-    // somehow present the keys in trackNameNumber, then user selects 
-    // get the value for the instrument name 
+    // // somehow present the keys in trackNameNumber, then user selects 
+    // // get the value for the instrument name 
+    // var trackSelectionPanel = document.createElement("div");
+    // trackSelectionPanel.classList.add('col-md', 'p-3', 'm-2');
+
+    // var trackSelectionPanel_header = document.createElement('h6');
+    // trackSelectionPanel_header.innerHTML = "Select a track";
+    // trackSelectionPanel.appendChild(trackSelectionPanel_header);
+
+    // // var trackSelectionPanel_header = document.createElement('h6');
+    // // tag.appendChild(text);
+    // // var element = document.getElementById("new");
+    // control_panel.appendChild(trackSelectionPanel);
 
     // hardcoding...
-    trackNo = 0; 
+    // trackNo = 0;
 
     // Get chorus 
     var chorusSequence = getChorus(midi.tracks[trackNo].notes)
@@ -269,13 +326,18 @@ playButton.addEventListener('click', function() {
 
     if (!audioCtx) {
 
+        if (!currentMidi) {
+            window.alert("MIDI File Not Uploaded!");
+            return;
+        }
         audioCtx = new(window.AudioContext || window.webkitAudioContext);
+        trackNo = trackNameNumber[selectedTrack.id];
         playButton.innerHTML = "Pause";
+        selectedTrack = document.querySelector('input[name="track"]:checked');
 
-        //console.log("current midi is " + JSON.stringify(currentMidi))
-        // generateTransitions(currentMidi);
-        playMarkov(currentMidi);
+        playMarkov(currentMidi, trackNo);
         return;
+
     }
 
     if (audioCtx.state === 'suspended') {
@@ -307,12 +369,12 @@ uploadBtn.addEventListener("click", function() {
 });
 
 file.addEventListener("change", (e) => {
-    console.log("file added: " + file.value)
 
     //get the files
     const files = e.target.files;
     if (files.length > 0) {
         const file = files[0];
-        parseFile(file)
+        parseFile(file);
     }
+
 });
