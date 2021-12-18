@@ -132,10 +132,10 @@ function add(accumulator, a) {
     return accumulator + a;
 }
 
-function calculateNextNotes(midi, lenOfSequence) {
+function calculateNextNotes(midi, lenOfSequence, trackNo) {
 
     var newSequence = new Array(); // Sequence of new notes to be played;
-    var midiNoteSequence = midi.tracks[0].notes; // array of notes and their properties (ex. duration)
+    var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
     // Split return value of generateTransitions into three diff variables
     var transitionMatrix_calc = generateTransitions(midi);
@@ -196,7 +196,23 @@ function calculateNextNotes(midi, lenOfSequence) {
 
 function playMarkov(midi) {
 
-    var noteSequence = calculateNextNotes(midi, numOfNotes);
+    var trackNameNumber = {}
+    var trackNo; 
+    // Determine which track to use 
+    for(var i = 0; i < midi.tracks.length; i ++){
+        //console.log("track is " + JSON.stringify(track))
+        if(midi.tracks[i].instrument.name != "" && midi.tracks[i].notes  != []){
+            trackNameNumber[midi.tracks[i].instrument.name] = trackNo
+        }
+    } 
+
+    // somehow present the keys in trackNameNumber, then user selects 
+    // get the value for the instrument name 
+
+    // hardcoding...
+    trackNo = 0; 
+
+    var noteSequence = calculateNextNotes(midi, numOfNotes, trackNo);
 
     noteSequence.forEach(note => {
         playNote(note);
