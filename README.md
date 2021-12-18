@@ -19,3 +19,4 @@ If "dev tools failed to load SourceMap error" -> In DevTools (F12) -> Settings (
 2. User sets nth order = 1, 2, or 3
 3. Markov algorithm calculates next notes 
 4. New sequence plays 
+5. Colors generated using https://designingsound.org/2017/12/20/mapping-sound-to-color/
