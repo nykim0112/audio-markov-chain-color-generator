@@ -2,23 +2,55 @@
   "header": {
     "keySignatures": [
       {
-        "key": "C",
+        "key": "E",
         "scale": "major",
         "ticks": 0
+      },
+      {
+        "key": "Gb",
+        "scale": "major",
+        "ticks": 146160
+      },
+      {
+        "key": "E",
+        "scale": "major",
+        "ticks": 0
+      },
+      {
+        "key": "Gb",
+        "scale": "major",
+        "ticks": 146160
       }
     ],
     "meta": [],
-    "name": "",
+    "name": "Piano\u0000",
     "ppq": 480,
-    "tempos": [],
+    "tempos": [
+      {
+        "bpm": 113.99995440001824,
+        "ticks": 0
+      },
+      {
+        "bpm": 113.99995440001824,
+        "ticks": 69359
+      }
+    ],
     "timeSignatures": [
       {
         "ticks": 0,
         "timeSignature": [
+          1,
+          8
+        ],
+        "measures": 0
+      },
+      {
+        "ticks": 240,
+        "timeSignature": [
           4,
           4
         ],
-        "measures": 0
+        "measures": 0.25
       }
     ]
   },
@@ -26,71 +58,195 @@
     {
       "channel": 0,
       "controlChanges": {
+        "2": [
+          {
+            "number": 2,
+            "ticks": 0,
+            "time": 0,
+            "value": 0.6299212598425197
+          },
+          {
+            "number": 2,
+            "ticks": 38400,
+            "time": 42.10528,
+            "value": 0.7559055118110236
+          },
+          {
+            "number": 2,
+            "ticks": 69360,
+            "time": 76.05266200000001,
+            "value": 0.6299212598425197
+          },
+          {
+            "number": 2,
+            "ticks": 84480,
+            "time": 92.63161600000001,
+            "value": 0.7559055118110236
+          },
+          {
+            "number": 2,
+            "ticks": 130800,
+            "time": 143.42111,
+            "value": 0.3858267716535433
+          },
+          {
+            "number": 2,
+            "ticks": 146160,
+            "time": 160.263222,
+            "value": 0.8818897637795275
+          }
+        ],
         "7": [
           {
             "number": 7,
-            "ticks": 2,
-            "time": 0.0020833333333333333,
+            "ticks": 0,
+            "time": 0,
             "value": 0.7874015748031497
           }
         ],
         "10": [
           {
             "number": 10,
-            "ticks": 4,
-            "time": 0.004166666666666667,
+            "ticks": 0,
+            "time": 0,
             "value": 0.5039370078740157
           }
         ],
         "91": [
           {
             "number": 91,
-            "ticks": 6,
-            "time": 0.00625,
-            "value": 0.23622047244094488
+            "ticks": 0,
+            "time": 0,
+            "value": 0
           }
         ],
         "93": [
           {
             "number": 93,
-            "ticks": 8,
-            "time": 0.008333333333333333,
-            "value": 0.23622047244094488
+            "ticks": 0,
+            "time": 0,
+            "value": 0
+          }
+        ],
+        "121": [
+          {
+            "number": 121,
+            "ticks": 0,
+            "time": 0,
+            "value": 0
           }
         ]
       },
       "pitchBends": [],
       "instrument": {
-        "family": "strings",
-        "name": "violin",
-        "number": 40
+        "family": "piano",
+        "name": "acoustic grand piano",
+        "number": 0
       },
-      "name": "",
+      "name": "Piano\u0000",
       "notes": [
         {
-          "duration": 0.12395833333333334,
-          "durationTicks": 119,
-          "midi": 76,
-          "name": "E5",
+          "duration": 0.24890360833333333,
+          "durationTicks": 227,
+          "midi": 64,
+          "name": "E4",
           "ticks": 0,
           "time": 0,
           "velocity": 0.6299212598425197
         },
         {
-          "duration": 0.12395833333333334,
-          "durationTicks": 119,
-          "midi": 72,
-          "name": "C5",
-          "ticks": 0,
-          "time": 0,
+          "duration": 0.4989037083333334,
+          "durationTicks": 455,
+          "midi": 73,
+          "name": "C#5",
+          "ticks": 240,
+          "time": 0.263158,
           "velocity": 0.6299212598425197
         },
         {
-          "duration": 0.24895833333333334,
-          "durationTicks": 239,
-          "midi": 76,
-          "name": "E5",
-          "ticks": 120,
-          "time": 0.125,
+          "duration": 0.4989037083333332,
+          "durationTicks": 455,
+          "midi": 71,
+          "name": "B4",
+          "ticks": 720,
+          "time": 0.789474,
           "velocity": 0.6299212598425197
         },
+        {
+          "duration": 0.4989037083333332,
+          "durationTicks": 455,
+          "midi": 69,
+          "name": "A4",
+          "ticks": 1200,
+          "time": 1.31579,
+          "velocity": 0.6299212598425197
+        },
+        {
+          "duration": 0.24890360833333358,
+          "durationTicks": 227,
+          "midi": 68,
+          "name": "G#4",
+          "ticks": 1680,
+          "time": 1.842106,
+          "velocity": 0.6299212598425197
+        },
+
+
+        function getChorus(fullSequence){
+
+          //console.log("full seq is " + JSON.stringify(fullSequence))
+          var chorus = new Array()
+      
+          // for each note in fullSeq, add it to a list 
+          var noteList = new Array();  
+          fullSequence.forEach((note) => {
+              var dict = {}
+              dict['midi'] = note.midi; 
+              dict['duration'] = note.duration;
+              noteList.push(dict)
+          });
+      
+          //console.log("notelist " +JSON.stringify(noteList))
+      
+      
+          // this is a list of lists containing dictionaries containing all chorus sequences 
+          var allChorusPossibilities = new Array(); 
+          var currentMelody = new Array(); 
+      
+          // shift lists to find match 
+          // compare notetList j=1, 2, 3... to listToShift i. only increment i once all j tested
+          for(var i = 0; i <= noteList.length; i++){
+              let j; 
+      
+              // find next occurrence of noteList[i]
+              var equalCounter = 0; 
+              for (j = i+1; j < noteList.length; j++){
+                  if(noteList[i].midi == noteList[j].midi && noteList[i].duration == noteList[j].duration){
+                      equalCounter++;
+                      console.log("Equal counter " + equalCounter)
+                      console.log("current melody is " + JSON.stringify(currentMelody))
+      
+                      //console.log("equal notes found" + JSON.stringify(noteList[i]) + JSON.stringify(noteList[j]))
+      
+                      currentMelody.push(noteList[j])
+                      console.log("current melody is " + JSON.stringify(currentMelody))
+                      allChorusPossibilities.push(currentMelody)
+                      break; 
+                  }else{
+                      // current melody is empty is notes are different 
+                      currentMelody = []
+                  }
+      
+                  // else no match found
+              }
+          }
+          console.log("All possibilities are " + JSON.stringify(allChorusPossibilities))
+      
+          // get max melody 
+          var longest = allChorusPossibilities.sort(
+              function (a, b) {
+                  return b.length - a.length;
+              }
+          )[0];
+          console.log("longest is " + JSON.stringify(longest))
+      }
