@@ -237,11 +237,11 @@ function playNote(note) {
 
     var gainNode = audioCtx.createGain();
 
+    //  TODO: map frequency with color and create dynamic gradient 
     for (var i = 0; i < additiveOscillatorCount; i++) {
         const additiveOsc = audioCtx.createOscillator();
         console.log("this is " + Tone.Frequency(note.midi, "midi"))
         additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi");
-        // additiveOsc.frequency.value = midiToFreq(note.pitch);
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
     }
