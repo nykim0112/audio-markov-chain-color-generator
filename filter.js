@@ -176,7 +176,7 @@ function add(accumulator, a) {
     return accumulator + a;
 }
 
-function calculateNextNotes(chorusSequence, lenOfSequence) {
+function calculateNextNotes(midiNoteSequence, lenOfSequence) {
 
     console.log('track number ' + trackNo);
     var newSequence = new Array(); // Sequence of new notes to be played;
@@ -184,7 +184,7 @@ function calculateNextNotes(chorusSequence, lenOfSequence) {
     var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
     // Split return value of generateTransitions into three diff variables
-    var transitionMatrix_calc = generateTransitions(chorusSequence);
+    var transitionMatrix_calc = generateTransitions(midiNoteSequence);
     var prevNotegroups = transitionMatrix_calc[0];
     var currNotegroups = transitionMatrix_calc[1];
     var transitionMatrix = transitionMatrix_calc[2];
@@ -194,8 +194,8 @@ function calculateNextNotes(chorusSequence, lenOfSequence) {
 
     // Take the first n notes from the midi file to newSequence
     for (var i = 0; i < n; i++) {
-        newSequence.push({ midi: chorusSequence[i].midi, startTime: currentTime, endTime: currentTime + chorusSequence[i].duration })
-        currentTime += chorusSequence[i].duration;
+        newSequence.push({ midi: midiNoteSequence[i].midi, startTime: currentTime, endTime: currentTime + midiNoteSequence[i].duration })
+        currentTime += midiNoteSequence[i].duration;
     }
 
     // Generate next lenOfSequence number of notes with transition matrix
@@ -228,8 +228,8 @@ function calculateNextNotes(chorusSequence, lenOfSequence) {
 
             console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + chorusSequence[j].duration }); // MODIFY HERE TO CHANGE FORMAT OF 
-                currentTime += chorusSequence[j].duration;
+                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + midiNoteSequence[j].duration }); // MODIFY HERE TO CHANGE FORMAT OF 
+                currentTime += midiNoteSequence[j].duration;
                 break;
             }
         }
@@ -244,38 +244,7 @@ function calculateNextNotes(chorusSequence, lenOfSequence) {
 
 function playMarkov(midi, trackNo) {
 
-    // // Determine which track to use 
-    // var trackNameNumber = {}
-    // var trackNo;
-
-    // for (var i = 0; i < midi.tracks.length; i++) {
-    //     //console.log("track is " + JSON.stringify(track))
-    //     if (midi.tracks[i].instrument.name != "" && midi.tracks[i].notes != []) {
-    //         trackNameNumber[midi.tracks[i].instrument.name] = i;
-    //     }
-    // }
-
-    // // somehow present the keys in trackNameNumber, then user selects 
-    // // get the value for the instrument name 
-    // var trackSelectionPanel = document.createElement("div");
-    // trackSelectionPanel.classList.add('col-md', 'p-3', 'm-2');
-
-    // var trackSelectionPanel_header = document.createElement('h6');
-    // trackSelectionPanel_header.innerHTML = "Select a track";
-    // trackSelectionPanel.appendChild(trackSelectionPanel_header);
-
-    // // var trackSelectionPanel_header = document.createElement('h6');
-    // // tag.appendChild(text);
-    // // var element = document.getElementById("new");
-    // control_panel.appendChild(trackSelectionPanel);
-
-    // hardcoding...
-    // trackNo = 0;
-
-    // Get chorus 
-    var chorusSequence = getChorus(midi.tracks[trackNo].notes)
-
-    var noteSequence = calculateNextNotes(chorusSequence, numOfNotes);
+    var noteSequence = calculateNextNotes(midi, numOfNotes);
 
     noteSequence.forEach(note => {
         console.log("note is " + JSON.stringify(note))
