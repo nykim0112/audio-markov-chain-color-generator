@@ -64,6 +64,7 @@ function generateTransitions(midiNoteSequence) {
 
         var nNote = new Array();
 
+
         for (var j = i; j < i + n + 1; j++) {
             nNote.push(midiNoteSequence[j].midi);
         }
@@ -136,20 +137,19 @@ function calculateNextNotes(midi, lenOfSequence, trackNo) {
     var newSequence = new Array(); // Sequence of new notes to be played;
     var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
-    console.log("midi sequence")
-    console.log(JSON.stringify(midiNoteSequence))
     // Split return value of generateTransitions into three diff variables
     var transitionMatrix_calc = generateTransitions(midiNoteSequence);
     var prevNotegroups = transitionMatrix_calc[0];
     var currNotegroups = transitionMatrix_calc[1];
     var transitionMatrix = transitionMatrix_calc[2];
 
-    var duration = 0;
+    var currentTime = 0;
+
 
     // Take the first n notes from the midi file to newSequence
     for (var i = 0; i < n; i++) {
-        newSequence.push({ midi: midiNoteSequence[i].midi, startTime: duration, endTime: duration + 0.5 })
-        duration += 0.5;
+        newSequence.push({ midi: midiNoteSequence[i].midi, startTime: currentTime, endTime: currentTime + midiNoteSequence[i].duration })
+        currentTime += midiNoteSequence[i].duration;
     }
 
     // Generate next lenOfSequence number of notes with transition matrix
@@ -180,9 +180,10 @@ function calculateNextNotes(midi, lenOfSequence, trackNo) {
         for (var j = 0; j < currNotegroups.length; j++) {
             randomProb -= probabilities[j];
 
+            console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                newSequence.push({ midi: currNotegroups[j], startTime: duration, endTime: duration + 0.5 }); // MODIFY HERE TO CHANGE FORMAT OF 
-                duration = duration + 0.5;
+                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + midiNoteSequence[j].duration }); // MODIFY HERE TO CHANGE FORMAT OF 
+                currentTime += midiNoteSequence[j].duration;
                 break;
             }
         }
@@ -211,7 +212,7 @@ function playMarkov(midi) {
     // get the value for the instrument name 
 
     // hardcoding...
-    trackNo = 2; 
+    trackNo = 0; 
 
     var noteSequence = calculateNextNotes(midi, numOfNotes, trackNo);
 
@@ -255,8 +256,8 @@ function playNote(note) {
 
     gainNode.gain.value = 0;
     gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
-    gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.1, 0.05);
-    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.05, 0.01);
+    gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
+    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.1, 0.01);
 
 }
 
