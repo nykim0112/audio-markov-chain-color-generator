@@ -10,8 +10,8 @@ Run HTML file <br />
 If "dev tools failed to load SourceMap error" -> In DevTools (F12) -> Settings (F1), Disable both "enable JS source maps" and "enable CSS source maps" in "Preferences -> Sources"
 
 ##  TODOs 
-- get notes to play separately (prob an Amy task)
 - multiple midi file option 
+- make color visual look better
 
 
 ## Code Outline
