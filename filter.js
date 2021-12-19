@@ -1,4 +1,4 @@
-
+import { GlowParticle } from './glowparticle.js';
 
 var file = document.getElementById("file");
 const control_panel = document.getElementById("control_panel");
@@ -11,89 +11,89 @@ var selectedTrack;
 
 const midi = new Midi();
 var currentMidi;
-const TAU = Math.PI * 2; 
+// const TAU = Math.PI * 2;
 
 var trackNo;
 var audioCtx;
 var songSelected;
 var trackNameNumber;
-
+var colorscreen;
 
 // MAPPING OF PITCH TO COLOR 
 const PITCH_TO_COLOR = {
-    'C': {r: 250, g:15, b:40}, // red
-    'G': {r: 255, g:140, b:0}, //orange
-    'D': {r: 255, g:255, b:0}, // yellow 
-    'A': {r: 0, g:138, b:0}, // green 
-    'E': {r: 135, g:206, b:250}, // light blue 
-    'B': {r: 224, g:255, b:255}, // whitish blue 
-    'F#':  {r: 25, g:25, b:112}, // blue saturated  
-    'Gb':  {r: 25, g:25, b:112}, // blue saturated  
-    'Db': {r: 238, g:130, b:238}, // violet 
-    'C#': {r: 238, g:130, b:238}, // violet 
-    'Ab': {r: 128, g:0, b:128}, // purple 
-    'G#': {r: 128, g:0, b:128}, // purple 
-    'Eb': {r: 0, g:0, b:139}, // dark blue 
-    'D#': {r: 0, g:0, b:139}, // dark blue 
-    'Bb': {r: 211, g:211, b:211}, // gray  
-    'A#': {r: 211, g:211, b:211}, // gray  
-    'F': {r: 139, g:0, b:0} // dark red 
+    'C': { r: 250, g: 15, b: 40 }, // red
+    'G': { r: 255, g: 140, b: 0 }, //orange
+    'D': { r: 255, g: 255, b: 0 }, // yellow 
+    'A': { r: 0, g: 138, b: 0 }, // green 
+    'E': { r: 135, g: 206, b: 250 }, // light blue 
+    'B': { r: 224, g: 255, b: 255 }, // whitish blue 
+    'F#': { r: 25, g: 25, b: 112 }, // blue saturated  
+    'Gb': { r: 25, g: 25, b: 112 }, // blue saturated  
+    'Db': { r: 238, g: 130, b: 238 }, // violet 
+    'C#': { r: 238, g: 130, b: 238 }, // violet 
+    'Ab': { r: 128, g: 0, b: 128 }, // purple 
+    'G#': { r: 128, g: 0, b: 128 }, // purple 
+    'Eb': { r: 0, g: 0, b: 139 }, // dark blue 
+    'D#': { r: 0, g: 0, b: 139 }, // dark blue 
+    'Bb': { r: 211, g: 211, b: 211 }, // gray  
+    'A#': { r: 211, g: 211, b: 211 }, // gray  
+    'F': { r: 139, g: 0, b: 0 } // dark red 
 }
 
-var COLORS = []; 
+var COLORS = [];
 
-class GlowParticle {
-    constructor(x, y, radius, rgb){
-        this.x = x; 
-        this.y = y; 
-        this.radius = radius; 
-        this.rgb = rgb; 
+// class GlowParticle {
+//     constructor(x, y, radius, rgb) {
+//         this.x = x;
+//         this.y = y;
+//         this.radius = radius;
+//         this.rgb = rgb;
 
-        this.vx = Math.random() * 4; 
-        this.vy = Math.random() * 4; 
+//         this.vx = Math.random() * 4;
+//         this.vy = Math.random() * 4;
 
-        this.sinVal = Math.random()
-    }
+//         this.sinVal = Math.random()
+//     }
 
-    animate(ctx, stageWidth, stageHeight){
-        this.sinVal += 0.01; 
-        this.radius += Math.sin(this.sinVal)
+//     animate(ctx, stageWidth, stageHeight) {
+//         this.sinVal += 0.01;
+//         this.radius += Math.sin(this.sinVal)
 
-        this.x += this.vx
-        this.y += this.vy
-        
-        if(this.x < 0){
-            this.vx *= -1; 
-            this.x +=10; 
-        }else if(this.x > stageWidth){
-            this.vy *= -1; 
-            this.x -=10; 
-        }
+//         this.x += this.vx
+//         this.y += this.vy
 
-        if(this.y < 0){
-            this.vx *= -1; 
-            this.y +=10; 
-        }else if(this.y > stageWidth){
-            this.vy *= -1; 
-            this.y -=10; 
-        }
+//         if (this.x < 0) {
+//             this.vx *= -1;
+//             this.x += 10;
+//         } else if (this.x > stageWidth) {
+//             this.vy *= -1;
+//             this.x -= 10;
+//         }
 
-        ctx.beginPath(); 
-        const g = ctx.createRadialGradient(
-            this.x, 
-            this.y, 
-            this.radius * 0.01, 
-            this.x, 
-            this.y, 
-            this.radius
-        ); 
-        g.addColorStop(0, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`);
-        g.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0)`);
-        ctx.fillStyle = g
-        ctx.arc(this.x, this.y, this.radius, 0, TAU, false); 
-        ctx.fill()
-    }
-}
+//         if (this.y < 0) {
+//             this.vx *= -1;
+//             this.y += 10;
+//         } else if (this.y > stageWidth) {
+//             this.vy *= -1;
+//             this.y -= 10;
+//         }
+
+//         ctx.beginPath();
+//         const g = ctx.createRadialGradient(
+//             this.x,
+//             this.y,
+//             this.radius * 0.01,
+//             this.x,
+//             this.y,
+//             this.radius
+//         );
+//         g.addColorStop(0, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`);
+//         g.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0)`);
+//         ctx.fillStyle = g
+//         ctx.arc(this.x, this.y, this.radius, 0, TAU, false);
+//         ctx.fill()
+//     }
+// }
 
 
 function parseFile(file) {
@@ -173,7 +173,7 @@ function generateTransitions(midiNoteSequence) {
         var nNote = new Array();
 
         for (var j = i; j < i + n + 1; j++) {
-            
+
             // push midi vals 
             nNote.push(midiNoteSequence[j].midi);
 
@@ -330,7 +330,7 @@ function playNote(note) {
 
     var activeOscillators = [];
 
-    offset = 1; //it takes a bit of time to queue all these events
+    const offset = 1; //it takes a bit of time to queue all these events
 
     const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
 
@@ -374,7 +374,10 @@ playButton.addEventListener('click', function() {
         selectedTrack = document.querySelector('input[name="track"]:checked');
 
         playMarkov(currentMidi, trackNo);
-        new App(); 
+
+        if (!colorscreen) {
+            colorscreen = new App();
+        }
         return;
 
     }
@@ -396,6 +399,8 @@ resetButton.addEventListener('click', function() {
     if (audioCtx) {
         audioCtx.close();
         audioCtx = false;
+
+        colorscreen = false;
 
         playButton.innerHTML = "Play";
         return;
@@ -422,63 +427,63 @@ file.addEventListener("change", (e) => {
 // color display 
 class App {
     constructor() {
-      this.canvas = document.createElement('canvas'); 
-      document.body.appendChild(this.canvas);
-      this.ctx = this.canvas.getContext('2d')
-  
-      this.pixelRatio = (window.devicePixelRatio > 1) ? 2 : 1; 
-  
-      this.totalParticles = numOfNotes; // will be the number of notes 
-      this.particles = []
-      this.maxRadius = 900
-      this.minRadius = 400
-  
-      window.addEventListener('resize', this.resize.bind(this), false)
-      this.resize(); 
-  
-      window.requestAnimationFrame(this.animate.bind(this))
+        this.canvas = document.getElementById('colorscreen');
+        // document.body.appendChild(this.canvas);
+        this.ctx = this.canvas.getContext('2d')
+
+        this.pixelRatio = (window.devicePixelRatio > 1) ? 2 : 1;
+
+        this.totalParticles = numOfNotes; // will be the number of notes 
+        this.particles = []
+        this.maxRadius = 900
+        this.minRadius = 400
+
+        window.addEventListener('resize', this.resize.bind(this), false)
+        this.resize();
+
+        window.requestAnimationFrame(this.animate.bind(this))
     }
-  
-    resize(){
-      this.stageWidth = document.body.clientWidth; 
-      this.stageHeight = document.body.clientHeight; 
-  
-      this.canvas.width = this.stageWidth * this.pixelRatio; 
-      this.canvas.height = this.stageHeight * this.pixelRatio; 
-      this.ctx.scale(this.pixelRatio, this.pixelRatio)
-  
-      this.createParticles()
+
+    resize() {
+        this.stageWidth = document.body.clientWidth;
+        console.log(this.stageWidth);
+        this.stageHeight = document.body.clientHeight;
+
+        this.canvas.width = this.stageWidth;
+        this.canvas.height = this.stageHeight;
+        this.ctx.scale(this.pixelRatio, this.pixelRatio)
+
+        this.createParticles()
     }
-  
-    createParticles(){
-      let curColor = 0; 
-      this.particles = []; 
-  
-      for (let i = 0; i < this.totalParticles; i++){
-        const item = new GlowParticle(
-          Math.random() * this.stageWidth, 
-          Math.random() * this.stageHeight, 
-          Math.random() * (this.maxRadius - this.minRadius) + this.minRadius, 
-          COLORS[curColor]
-        ); 
-  
-        if(++curColor >=COLORS.length){
-          curColor = 0; 
+
+    createParticles() {
+        let curColor = 0;
+        this.particles = [];
+
+        for (let i = 0; i < this.totalParticles; i++) {
+            const item = new GlowParticle(
+                Math.random() * this.stageWidth,
+                Math.random() * this.stageHeight,
+                Math.random() * (this.maxRadius - this.minRadius) + this.minRadius,
+                COLORS[curColor]
+            );
+
+            if (++curColor >= COLORS.length) {
+                curColor = 0;
+            }
+
+            this.particles[i] = item;
         }
-  
-        this.particles[i] = item; 
-      }
     }
-  
-    animate(){
-      window.requestAnimationFrame(this.animate.bind(this))
-  
-      this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight); 
-  
-      for(let i = 0; i < this.totalParticles; i++){
-        const item = this.particles[i]
-        item.animate(this.ctx, this.stageWidth, this.stageHeight)
-      }
+
+    animate() {
+        window.requestAnimationFrame(this.animate.bind(this))
+
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
+
+        for (let i = 0; i < this.totalParticles; i++) {
+            const item = this.particles[i]
+            item.animate(this.ctx, this.stageWidth, this.stageHeight)
+        }
     }
-  }
-  
+}
