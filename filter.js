@@ -102,7 +102,6 @@ function parseFile(file) {
 
 }
 
-
 function generateTransitions(midiNoteSequence) {
 
     /*
@@ -241,11 +240,11 @@ function calculateNextNotes(midi, lenOfSequence) {
 
             //console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                var dur; 
-                if(parseFloat(midiNoteSequence[i].duration) < 0.5){
+                var dur;
+                if (parseFloat(midiNoteSequence[i].duration) < 0.5) {
                     console.log("duration low")
                     dur = parseFloat(midiNoteSequence[i].duration) + 0.4
-                }else{
+                } else {
                     dur = parseFloat(midiNoteSequence[i].duration)
                 }
 
@@ -280,7 +279,7 @@ function playNote(note) {
 
     var activeOscillators = [];
 
-    const offset = 1; //it takes a bit of time to queue all these events
+    const offset = 2; //it takes a bit of time to queue all these events
 
     const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
 
@@ -306,6 +305,12 @@ function playNote(note) {
     gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
     gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.2, 0.1);
 
+    if (gainNode.gain == 0) {
+        for (var i = 0; i < additiveOscillatorCount; i++) {
+            activeOscillators[i].stop();
+        }
+    }
+
 }
 
 playButton.addEventListener('click', function() {
@@ -316,10 +321,10 @@ playButton.addEventListener('click', function() {
             window.alert("MIDI File Not Uploaded!");
             return;
         }
+
         audioCtx = new(window.AudioContext || window.webkitAudioContext);
         trackNo = trackNameNumber[selectedTrack.id];
         playButton.innerHTML = "Pause";
-        selectedTrack = document.querySelector('input[name="track"]:checked');
 
         playMarkov(currentMidi, trackNo);
 
@@ -354,6 +359,8 @@ resetButton.addEventListener('click', function() {
         return;
     }
 
+    selectedTrack = document.querySelector('input[name=track]:checked');
+
 }, false);
 
 uploadBtn.addEventListener("click", function() {
@@ -369,6 +376,16 @@ file.addEventListener("change", (e) => {
         parseFile(file);
     }
 
+});
+
+$('input[type=radio][name=track]').change(function() {
+    if (audioCtx) {
+        audioCtx.close();
+        audioCtx = false;
+    }
+    selectedTrack = document.querySelector('input[name=track]:checked');
+
+    playButton.innerHTML = "Play";
 });
 
 
