@@ -11,6 +11,7 @@ If "dev tools failed to load SourceMap error" -> In DevTools (F12) -> Settings (
 
 ##  TODOs 
 - multiple midi file option 
+- anything with fast notes plays all at once kinda
 - make color visual look better
 
 
