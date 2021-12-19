@@ -42,60 +42,6 @@ const PITCH_TO_COLOR = {
 
 var COLORS = [];
 
-// class GlowParticle {
-//     constructor(x, y, radius, rgb) {
-//         this.x = x;
-//         this.y = y;
-//         this.radius = radius;
-//         this.rgb = rgb;
-
-//         this.vx = Math.random() * 4;
-//         this.vy = Math.random() * 4;
-
-//         this.sinVal = Math.random()
-//     }
-
-//     animate(ctx, stageWidth, stageHeight) {
-//         this.sinVal += 0.01;
-//         this.radius += Math.sin(this.sinVal)
-
-//         this.x += this.vx
-//         this.y += this.vy
-
-//         if (this.x < 0) {
-//             this.vx *= -1;
-//             this.x += 10;
-//         } else if (this.x > stageWidth) {
-//             this.vy *= -1;
-//             this.x -= 10;
-//         }
-
-//         if (this.y < 0) {
-//             this.vx *= -1;
-//             this.y += 10;
-//         } else if (this.y > stageWidth) {
-//             this.vy *= -1;
-//             this.y -= 10;
-//         }
-
-//         ctx.beginPath();
-//         const g = ctx.createRadialGradient(
-//             this.x,
-//             this.y,
-//             this.radius * 0.01,
-//             this.x,
-//             this.y,
-//             this.radius
-//         );
-//         g.addColorStop(0, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`);
-//         g.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0)`);
-//         ctx.fillStyle = g
-//         ctx.arc(this.x, this.y, this.radius, 0, TAU, false);
-//         ctx.fill()
-//     }
-// }
-
-
 function parseFile(file) {
 
     /*
@@ -155,8 +101,6 @@ function parseFile(file) {
 
 
 }
-
-
 
 function generateTransitions(midiNoteSequence) {
 
@@ -296,11 +240,11 @@ function calculateNextNotes(midi, lenOfSequence) {
 
             //console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                var dur; 
-                if(parseFloat(midiNoteSequence[i].duration) < 0.5){
+                var dur;
+                if (parseFloat(midiNoteSequence[i].duration) < 0.5) {
                     console.log("duration low")
                     dur = parseFloat(midiNoteSequence[i].duration) + 0.4
-                }else{
+                } else {
                     dur = parseFloat(midiNoteSequence[i].duration)
                 }
                 console.log("dur is " + dur)
@@ -337,7 +281,7 @@ function playNote(note) {
 
     var activeOscillators = [];
 
-    const offset = 1; //it takes a bit of time to queue all these events
+    const offset = 2; //it takes a bit of time to queue all these events
 
     const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
 
@@ -363,6 +307,12 @@ function playNote(note) {
     gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
     gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.2, 0.1);
 
+    if (gainNode.gain == 0) {
+        for (var i = 0; i < additiveOscillatorCount; i++) {
+            activeOscillators[i].stop();
+        }
+    }
+
 }
 
 playButton.addEventListener('click', function() {
@@ -373,10 +323,10 @@ playButton.addEventListener('click', function() {
             window.alert("MIDI File Not Uploaded!");
             return;
         }
+
         audioCtx = new(window.AudioContext || window.webkitAudioContext);
         trackNo = trackNameNumber[selectedTrack.id];
         playButton.innerHTML = "Pause";
-        selectedTrack = document.querySelector('input[name="track"]:checked');
 
         playMarkov(currentMidi, trackNo);
 
@@ -411,6 +361,8 @@ resetButton.addEventListener('click', function() {
         return;
     }
 
+    selectedTrack = document.querySelector('input[name=track]:checked');
+
 }, false);
 
 uploadBtn.addEventListener("click", function() {
@@ -426,6 +378,16 @@ file.addEventListener("change", (e) => {
         parseFile(file);
     }
 
+});
+
+$('input[type=radio][name=track]').change(function() {
+    if (audioCtx) {
+        audioCtx.close();
+        audioCtx = false;
+    }
+    selectedTrack = document.querySelector('input[name=track]:checked');
+
+    playButton.innerHTML = "Play";
 });
 
 
