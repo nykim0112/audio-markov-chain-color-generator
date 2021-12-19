@@ -28,6 +28,14 @@ export class GlowParticle {
             this.y +=10; 
         }
 
+        if(this.y < 0){
+            this.vx *= -1; 
+            this.y +=10; 
+        }else if(this.y > stageWidth){
+            this.vy *= -1; 
+            this.x +=10; 
+        }
+
         ctx.beginPath(); 
         const g = ctx.createRadialGradient(
             this.x, 

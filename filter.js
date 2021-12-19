@@ -361,7 +361,7 @@ function playNote(note) {
     gainNode.connect(audioCtx.destination);
     gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
     gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
-    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.3, 0.1);
+    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.2, 0.1);
 
 }
 
