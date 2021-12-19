@@ -180,7 +180,6 @@ function generateTransitions(midiNoteSequence) {
             // push note to color vals 
             var letterNote = midiNoteSequence[j].name.slice(0, -1)
             var color = PITCH_TO_COLOR[letterNote]
-            console.log("color is " + JSON.stringify(color))
             COLORS.push(color)
         }
         nNotesGroups[i] = nNote;
@@ -297,8 +296,16 @@ function calculateNextNotes(midi, lenOfSequence) {
 
             //console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + midiNoteSequence[j].duration }); // MODIFY HERE TO CHANGE FORMAT OF 
-                currentTime += midiNoteSequence[j].duration;
+                var dur; 
+                if(parseFloat(midiNoteSequence[i].duration) < 0.5){
+                    console.log("duration low")
+                    dur = parseFloat(midiNoteSequence[i].duration) + 0.4
+                }else{
+                    dur = parseFloat(midiNoteSequence[i].duration)
+                }
+                console.log("dur is " + dur)
+                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
+                currentTime += dur;
                 break;
             }
         }
@@ -330,16 +337,17 @@ function playNote(note) {
 
     var activeOscillators = [];
 
-    offset = 1; //it takes a bit of time to queue all these events
+    const offset = 1; //it takes a bit of time to queue all these events
 
     const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
 
     var gainNode = audioCtx.createGain();
+    gainNode.gain.value = 0;
 
     //  TODO: map frequency with color and create dynamic gradient 
     for (var i = 0; i < additiveOscillatorCount; i++) {
-        const additiveOsc = audioCtx.createOscillator();
-        console.log("this is " + Tone.Frequency(note.midi, "midi"))
+        var additiveOsc = audioCtx.createOscillator();
+        additiveOsc.type = "sine"
         additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi");
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
@@ -350,13 +358,10 @@ function playNote(note) {
     }
 
     // Envelope
-
     gainNode.connect(audioCtx.destination);
-
-    gainNode.gain.value = 0;
     gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
     gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
-    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.1, 0.01);
+    gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.3, 0.1);
 
 }
 
