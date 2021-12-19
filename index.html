@@ -5,7 +5,7 @@
     <title>New Melody Color Generator</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
@@ -16,36 +16,30 @@
     <script src="./node_modules/tone/build/Tone.js"></script>
     <script type="module" src="./glowparticle.js"></script>
 
+    <style>
+        .center-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 100vh;
+        }
+    </style>
+
 </head>
 
-<body class="p-4">
-
-    <div class="m-2">
-        <button type="button" id="play" class="btn btn-primary m-1">Play</button>
-        <button type="button" id="reset" class="btn btn-primary m-1">Reset</button>
-        <input type="file" id="file" accept="audio.midi" hidden="hidden" />
-        <button class="btn btn-primary m-1" type="button" id="uploadFile">Upload File</button>
-    </div>
-
-    <div class="d-inline-flex">
-        <div class="row" id="control_panel">
-            <!-- <div class="col-md p-3 m-2">
-                <h6>Song/Album</h6>
-                <div>
-                    <input type="Radio" name="source" id="mario" checked="checked">
-                    <label for="mario">Default (Super Mario)</label>
-                </div>
-
-                <div>
-                    <input type="Radio" name="source" id="Other1">
-                    <label for="Other1">Other1</label>
-                </div>
-
-                <div>
-                    <input type="Radio" name="source" id="Other2">
-                    <label for="Other2">Other2</label>
-                </div>
-            </div> -->
+<body class="p-4 center-screen">
+    <canvas id="colorscreen" style="position:fixed; top: 0; left: 0; z-index: -1; width: 100vw; height: 100vh;" width="100%" height="100%"></canvas>
+    <div class="container">
+        <div class="row m-2">
+            <div class="col m-2">
+                <button type="button" id="play" class="btn btn-primary m-1">Play</button>
+                <button type="button" id="reset" class="btn btn-primary m-1">Reset</button>
+                <input type="file" id="file" accept="audio.midi" hidden="hidden" />
+                <button class="btn btn-primary m-1" type="button" id="uploadFile">Upload File</button>
+            </div>
+        </div>
+        <div class="row m-2" id="control_panel">
 
             <div class="col-md p-3 m-2">
                 <h6> Order of Markov chain </h6>
@@ -57,23 +51,25 @@
                 <input type="range" id="numOfNotes" min="0" max="200" steps="1" value="50" list="tickmarks"></input>
 
                 <datalist id="tickmarks">
-                    <option value="0"></option>
-                    <option value="20"></option>
-                    <option value="40"></option>
-                    <option value="60"></option>
-                    <option value="80"></option>
-                    <option value="100"></option>
-                    <option value="120"></option>
-                    <option value="140"></option>
-                    <option value="160"></option>
-                    <option value="180"></option>
-                    <option value="200"></option>
-                    </datalist>
+                                <option value="0"></option>
+                                <option value="20"></option>
+                                <option value="40"></option>
+                                <option value="60"></option>
+                                <option value="80"></option>
+                                <option value="100"></option>
+                                <option value="120"></option>
+                                <option value="140"></option>
+                                <option value="160"></option>
+                                <option value="180"></option>
+                                <option value="200"></option>
+                                </datalist>
             </div>
         </div>
+
     </div>
 
-    <script src="filter.js"></script>
+
+    <script type="module" src="filter.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
