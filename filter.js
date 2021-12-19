@@ -42,60 +42,6 @@ const PITCH_TO_COLOR = {
 
 var COLORS = [];
 
-// class GlowParticle {
-//     constructor(x, y, radius, rgb) {
-//         this.x = x;
-//         this.y = y;
-//         this.radius = radius;
-//         this.rgb = rgb;
-
-//         this.vx = Math.random() * 4;
-//         this.vy = Math.random() * 4;
-
-//         this.sinVal = Math.random()
-//     }
-
-//     animate(ctx, stageWidth, stageHeight) {
-//         this.sinVal += 0.01;
-//         this.radius += Math.sin(this.sinVal)
-
-//         this.x += this.vx
-//         this.y += this.vy
-
-//         if (this.x < 0) {
-//             this.vx *= -1;
-//             this.x += 10;
-//         } else if (this.x > stageWidth) {
-//             this.vy *= -1;
-//             this.x -= 10;
-//         }
-
-//         if (this.y < 0) {
-//             this.vx *= -1;
-//             this.y += 10;
-//         } else if (this.y > stageWidth) {
-//             this.vy *= -1;
-//             this.y -= 10;
-//         }
-
-//         ctx.beginPath();
-//         const g = ctx.createRadialGradient(
-//             this.x,
-//             this.y,
-//             this.radius * 0.01,
-//             this.x,
-//             this.y,
-//             this.radius
-//         );
-//         g.addColorStop(0, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`);
-//         g.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0)`);
-//         ctx.fillStyle = g
-//         ctx.arc(this.x, this.y, this.radius, 0, TAU, false);
-//         ctx.fill()
-//     }
-// }
-
-
 function parseFile(file) {
 
     /*
@@ -155,7 +101,6 @@ function parseFile(file) {
 
 
 }
-
 
 
 function generateTransitions(midiNoteSequence) {
@@ -303,7 +248,8 @@ function calculateNextNotes(midi, lenOfSequence) {
                 }else{
                     dur = parseFloat(midiNoteSequence[i].duration)
                 }
-                console.log("dur is " + dur)
+
+                console.log("dur is " + dur + "and " + (currentTime + dur))
                 newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
                 currentTime += dur;
                 break;
@@ -329,9 +275,6 @@ function playMarkov(midi, trackNo) {
 
 }
 
-function midiToFreq(m) {
-    return Math.pow(2, (m - 69) / 12) * 440;
-}
 
 function playNote(note) {
 
