@@ -202,12 +202,18 @@ function calculateNextNotes(midi, lenOfSequence) {
     var transitionMatrix = transitionMatrix_calc[2];
 
     var currentTime = 0;
-
+    var speedplayFactor = 0.4;
+    var dur;
 
     // Take the first n notes from the midi file to newSequence
     for (var i = 0; i < n; i++) {
-        newSequence.push({ midi: midiNoteSequence[i].midi, startTime: currentTime, endTime: currentTime + midiNoteSequence[i].duration })
-        currentTime += midiNoteSequence[i].duration;
+        if (midiNoteSequence[i].duration < 0.5) {
+            dur = midiNoteSequence[i].duration + speedplayFactor;
+        } else {
+            dur = midiNoteSequence[i].duration;
+        }
+        newSequence.push({ midi: parseInt(midiNoteSequence[i].midi), startTime: currentTime, endTime: currentTime + dur });
+        currentTime += dur;
     }
 
     // Generate next lenOfSequence number of notes with transition matrix
@@ -240,16 +246,18 @@ function calculateNextNotes(midi, lenOfSequence) {
 
             //console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
-                var dur;
                 if (parseFloat(midiNoteSequence[i].duration) < 0.5) {
-                    console.log("duration low")
-                    dur = parseFloat(midiNoteSequence[i].duration) + 0.4
+                    dur = parseFloat(midiNoteSequence[i].duration) + speedplayFactor;
                 } else {
-                    dur = parseFloat(midiNoteSequence[i].duration)
+                    dur = parseFloat(midiNoteSequence[i].duration);
                 }
+<<<<<<< Updated upstream
 
                 console.log("dur is " + dur + "and " + (currentTime + dur))
                 newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
+=======
+                newSequence.push({ midi: parseInt(currNotegroups[j]), startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
+>>>>>>> Stashed changes
                 currentTime += dur;
                 break;
             }
@@ -268,7 +276,6 @@ function playMarkov(midi, trackNo) {
     var noteSequence = calculateNextNotes(midi, numOfNotes);
 
     noteSequence.forEach(note => {
-        console.log("note is " + JSON.stringify(note))
         playNote(note);
     });
 
@@ -290,7 +297,7 @@ function playNote(note) {
     for (var i = 0; i < additiveOscillatorCount; i++) {
         var additiveOsc = audioCtx.createOscillator();
         additiveOsc.type = "sine"
-        additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi");
+        additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi") + 15 * Math.random();
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
     }
