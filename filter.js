@@ -251,13 +251,7 @@ function calculateNextNotes(midi, lenOfSequence) {
                 } else {
                     dur = parseFloat(midiNoteSequence[i].duration);
                 }
-<<<<<<< Updated upstream
-
-                console.log("dur is " + dur + "and " + (currentTime + dur))
-                newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
-=======
                 newSequence.push({ midi: parseInt(currNotegroups[j]), startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
->>>>>>> Stashed changes
                 currentTime += dur;
                 break;
             }
