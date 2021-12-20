@@ -1,11 +1,4 @@
 # New Melody and Color Generator 
 
-## Installation 
-install npm if necessary <br />
-Then in command line type ```npm install @tonejs/midi``` and ```npm install tone```
-
-
-## To run locally 
-Run HTML file <br />
-If "dev tools failed to load SourceMap error" <br /> 
--> In DevTools (F12) -> Settings (F1), Disable both "enable JS source maps" and "enable CSS source maps" in "Preferences -> Sources"
+[Deployed App](https://markov-colors.netlify.app/)
+Read our [Notion post](https://branched-tugboat-2db.notion.site/Generate-Color-with-Sound-Using-Markov-Chain-052c8d4b7b83410f8ffe96bfe6a1161b) about this project!
