@@ -2,7 +2,7 @@
 
 ## Installation 
 install npm if necessary <br />
-Then in command line type ```npm install @tonejs/midi```
+Then in command line type ```npm install @tonejs/midi``` and ```npm install tone```
 
 
 ## To run locally 
