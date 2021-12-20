@@ -7,6 +7,7 @@ const playButton = document.getElementById('play');
 const resetButton = document.getElementById('reset');
 var n = parseInt(document.getElementById("nOrder").value);
 var numOfNotes = parseInt(document.getElementById("numOfNotes").value);
+var additiveSynth = document.getElementById("additive-synth").checked;
 var selectedTrack;
 
 const midi = new Midi();
@@ -62,13 +63,21 @@ function parseFile(file) {
             }
         }
 
-        // somehow present the keys in trackNameNumber, then user selects 
+        // present the keys in trackNameNumber, then user selects 
         // get the value for the instrument name 
+
+        var existing_trackSelectionPanel = document.getElementById("trackSelection");
+
+        if (existing_trackSelectionPanel) {
+            existing_trackSelectionPanel.remove();
+        }
+
         var trackSelectionPanel = document.createElement("div");
         trackSelectionPanel.classList.add('col-md', 'p-3', 'm-2');
+        trackSelectionPanel.id = "trackSelection";
 
         var trackSelectionPanel_header = document.createElement('h6');
-        trackSelectionPanel_header.innerHTML = "Select a track";
+        trackSelectionPanel_header.innerHTML = "Select a track:";
         trackSelectionPanel.appendChild(trackSelectionPanel_header);
 
         Object.keys(trackNameNumber).forEach(function(trackName) {
@@ -275,7 +284,12 @@ function playNote(note) {
 
     const offset = 2; //it takes a bit of time to queue all these events
 
-    const additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
+    var additiveOscillatorCount;
+    if (additiveSynth) {
+        additiveOscillatorCount = 5; // Number of oscillators in Additive Synthesis
+    } else {
+        additiveOscillatorCount = 1;
+    }
 
     var gainNode = audioCtx.createGain();
     gainNode.gain.value = 0;
@@ -283,7 +297,11 @@ function playNote(note) {
     for (var i = 0; i < additiveOscillatorCount; i++) {
         var additiveOsc = audioCtx.createOscillator();
         additiveOsc.type = "sine"
-        additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi") + 15 * Math.random();
+        if (additiveSynth) {
+            additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi") + 15 * Math.random();
+        } else {
+            additiveOsc.frequency.value = Tone.Frequency(note.midi, "midi");
+        }
         additiveOsc.connect(gainNode);
         activeOscillators.push(additiveOsc);
     }
@@ -294,8 +312,8 @@ function playNote(note) {
 
     // Envelope
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.setTargetAtTime(0.2, note.startTime + offset, 0.05);
-    gainNode.gain.setTargetAtTime(0.1, note.startTime + offset + 0.2, 0.05);
+    gainNode.gain.setTargetAtTime(0.5, note.startTime + offset, 0.05);
+    gainNode.gain.setTargetAtTime(0.4, note.startTime + offset + 0.2, 0.05);
     gainNode.gain.setTargetAtTime(0, note.endTime + offset - 0.2, 0.1);
 
     if (gainNode.gain == 0) {
@@ -308,15 +326,20 @@ function playNote(note) {
 
 playButton.addEventListener('click', function() {
 
+    if (!currentMidi) {
+        window.alert("MIDI File Not Uploaded!");
+        return;
+    }
+
+    selectedTrack = document.querySelector('input[name=track]:checked');
+    trackNo = trackNameNumber[selectedTrack.id];
+    n = parseInt(document.getElementById("nOrder").value);
+    numOfNotes = parseInt(document.getElementById("numOfNotes").value);
+    additiveSynth = document.getElementById("additive-synth").checked;
+
     if (!audioCtx) {
 
-        if (!currentMidi) {
-            window.alert("MIDI File Not Uploaded!");
-            return;
-        }
-
         audioCtx = new(window.AudioContext || window.webkitAudioContext);
-        trackNo = trackNameNumber[selectedTrack.id];
         playButton.innerHTML = "Pause";
 
         playMarkov(currentMidi, trackNo);
@@ -344,15 +367,14 @@ resetButton.addEventListener('click', function() {
 
     if (audioCtx) {
         audioCtx.close();
-        audioCtx = false;
-
-        colorscreen = false;
+        selectedTrack = null;
+        trackNo = null;
+        audioCtx = null;
+        colorscreen = null;
 
         playButton.innerHTML = "Play";
         return;
     }
-
-    selectedTrack = document.querySelector('input[name=track]:checked');
 
 }, false);
 
@@ -370,17 +392,6 @@ file.addEventListener("change", (e) => {
     }
 
 });
-
-$('input[type=radio][name=track]').change(function() {
-    if (audioCtx) {
-        audioCtx.close();
-        audioCtx = false;
-    }
-    selectedTrack = document.querySelector('input[name=track]:checked');
-
-    playButton.innerHTML = "Play";
-});
-
 
 // color display 
 class App {
