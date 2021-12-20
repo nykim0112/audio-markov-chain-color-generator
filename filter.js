@@ -11,11 +11,9 @@ var selectedTrack;
 
 const midi = new Midi();
 var currentMidi;
-// const TAU = Math.PI * 2;
 
 var trackNo;
 var audioCtx;
-var songSelected;
 var trackNameNumber;
 var colorscreen;
 
@@ -40,6 +38,7 @@ const PITCH_TO_COLOR = {
     'F': { r: 139, g: 0, b: 0 } // dark red 
 }
 
+// COLORS TO BE DISPLAYED
 var COLORS = [];
 
 function parseFile(file) {
@@ -58,7 +57,6 @@ function parseFile(file) {
         trackNameNumber = {}
 
         for (var i = 0; i < currentMidi.tracks.length; i++) {
-            //console.log("track is " + JSON.stringify(track))
             if (currentMidi.tracks[i].instrument.name != "" && currentMidi.tracks[i].notes.length != 0) {
                 trackNameNumber[currentMidi.tracks[i].instrument.name] = i;
             }
@@ -109,7 +107,6 @@ function generateTransitions(midiNoteSequence) {
     */
 
     var nNotesGroups = new Array(); // array of n-note groups
-    console.log("length " + midiNoteSequence.length)
 
     // iterate through to make groups of n notes and append to nNoteGroups
     for (var i = 0; i < midiNoteSequence.length - n; i++) {
@@ -190,9 +187,7 @@ function add(accumulator, a) {
 
 function calculateNextNotes(midi, lenOfSequence) {
 
-    console.log('track number ' + trackNo);
     var newSequence = new Array(); // Sequence of new notes to be played;
-    console.log(midi);
     var midiNoteSequence = midi.tracks[trackNo].notes; // array of notes and their properties (ex. duration)
 
     // Split return value of generateTransitions into three diff variables
@@ -238,17 +233,13 @@ function calculateNextNotes(midi, lenOfSequence) {
         for (var j = 0; j < currNotegroups.length; j++) {
             randomProb -= probabilities[j];
 
-            //console.log("current note group is " + JSON.stringify(currNotegroups[j]))
             if (randomProb < 0) {
                 var dur;
                 if (parseFloat(midiNoteSequence[i].duration) < 0.5) {
-                    console.log("duration low")
                     dur = parseFloat(midiNoteSequence[i].duration) + 0.4
                 } else {
                     dur = parseFloat(midiNoteSequence[i].duration)
                 }
-
-                console.log("dur is " + dur + "and " + (currentTime + dur))
                 newSequence.push({ midi: currNotegroups[j], startTime: currentTime, endTime: currentTime + dur }); // MODIFY HERE TO CHANGE FORMAT OF 
                 currentTime += dur;
                 break;
@@ -257,7 +248,6 @@ function calculateNextNotes(midi, lenOfSequence) {
 
     }
 
-    console.log(newSequence);
 
     return newSequence;
 
@@ -268,7 +258,6 @@ function playMarkov(midi, trackNo) {
     var noteSequence = calculateNextNotes(midi, numOfNotes);
 
     noteSequence.forEach(note => {
-        console.log("note is " + JSON.stringify(note))
         playNote(note);
     });
 
@@ -286,7 +275,6 @@ function playNote(note) {
     var gainNode = audioCtx.createGain();
     gainNode.gain.value = 0;
 
-    //  TODO: map frequency with color and create dynamic gradient 
     for (var i = 0; i < additiveOscillatorCount; i++) {
         var additiveOsc = audioCtx.createOscillator();
         additiveOsc.type = "sine"
@@ -411,7 +399,6 @@ class App {
 
     resize() {
         this.stageWidth = document.body.clientWidth;
-        console.log(this.stageWidth);
         this.stageHeight = document.body.clientHeight;
 
         this.canvas.width = this.stageWidth;
